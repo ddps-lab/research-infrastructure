@@ -22,10 +22,18 @@ sudo vim /etc/containerd/config.toml
 ```
 sudo systemctl restart containerd
 ```
-
-### 3. kubelet 설치
+### 3. kubeadm init
 ```
-source kubelet.sh
+sudo kubeadm init \
+		--apiserver-advertise-address=0.0.0.0 \
+		--pod-network-cidr=<public subnet cidr> \
+		--apiserver-cert-extra-sans=<master node public ip> \
+		--ignore-preflight-errors=ALL
+```
+
+### 4. kubelet 설치
+```
+source kubectl.sh
 ```
 
 ## Docker 환경 설정 변경
