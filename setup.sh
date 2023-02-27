@@ -20,6 +20,20 @@ sudo apt-get install docker-ce docker-ce-cli containerd.io
 sudo systemctl enable docker
 sudo systemctl start docker
 
+# Swap off
+sudo swapoff -a && sudo sed -i '/swap/s/^/#/' /etc/fstab
+
+# Set iptable
+cat <<EOF | sudo tee /etc/modules-load.d/k8s.conf
+br_netfilter
+EOF
+ 
+cat <<EOF | sudo tee /etc/sysctl.d/k8s.conf
+net.bridge.bridge-nf-call-ip6tables = 1
+net.bridge.bridge-nf-call-iptables = 1
+EOF
+sudo sysctl --system
+
 # Install CNI plugins (required for most pod network):
 CNI_PLUGINS_VERSION="v1.1.1"
 ARCH="amd64"
