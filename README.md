@@ -15,7 +15,9 @@ sudo mkdir -p /etc/containerd
 ```
 sudo vim /etc/containerd/config.toml
 ```
-위의 파일 내용 중 SystemdCgroup = true로 변경
+위의 파일 내용 중 <br/>
+**SystemdCgroup = true** <br/>
+로 변경 
 
 ```
 sudo systemctl restart containerd
