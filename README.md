@@ -1,6 +1,31 @@
 # research-infrastructure
 DDPS 연구실 실험 환경을 위한 쿠버네티스 인프라 구축
 
+## 세팅 순서
+### 1. Docker, Kubeadm 등 필수 패키지 설치 및 linux 설정
+```
+source setup.sh
+```
+### 2. kubelet 설치를 위한 세팅
+```
+sudo containerd config default | sudo tee /etc/containerd/config.toml
+sudo mkdir -p /etc/containerd
+```
+
+```
+sudo vim /etc/containerd/config.toml
+```
+위의 파일 내용 중 SystemdCgroup = true로 변경
+
+```
+sudo systemctl restart containerd
+```
+
+### 3. kubelet 설치
+```
+source kubelet.sh
+```
+
 ## Docker 환경 설정 변경
   - Docker service 파일 변경
     ```
