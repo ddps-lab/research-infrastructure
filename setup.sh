@@ -23,6 +23,22 @@ sudo systemctl start docker
 # Swap off
 sudo swapoff -a && sudo sed -i '/swap/s/^/#/' /etc/fstab
 
+# Master
+sudo ufw enable
+sudo ufw allow 6443/tcp
+sudo ufw allow 2379:2380/tcp
+sudo ufw allow 10250/tcp
+sudo ufw allow 10251/tcp
+sudo ufw allow 10252/tcp
+sudo ufw status
+
+# Worker
+sudo ufw enable
+sudo ufw allow 10250/tcp
+sudo ufw allow 30000:32767/tcp
+sudo ufw status
+
+
 # Set iptable
 cat <<EOF | sudo tee /etc/modules-load.d/k8s.conf
 br_netfilter
