@@ -17,7 +17,7 @@ sudo kubeadm init \
 		--ignore-preflight-errors=ALL
 ```
 
-**Worker Node에서 join**
+**Worker Node에서 join** <br/>
 Master Node에서 init 완료 시 join에 대한 명령어 확인 후 복사하여 Worker Node에서 실행
 
 
