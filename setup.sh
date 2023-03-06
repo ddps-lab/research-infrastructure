@@ -25,7 +25,7 @@ sudo swapoff -a && sudo sed -i '/swap/s/^/#/' /etc/fstab
 
 # Master
 sudo ufw enable
-sudo utf allow 22/tcp
+sudo ufw allow 22/tcp
 sudo ufw allow 6443/tcp
 sudo ufw allow 2379:2380/tcp
 sudo ufw allow 10250/tcp
@@ -35,7 +35,7 @@ sudo ufw status
 
 # Worker
 sudo ufw enable
-sudo utf allow 22/tcp
+sudo ufw allow 22/tcp
 sudo ufw allow 10250/tcp
 sudo ufw allow 30000:32767/tcp
 sudo ufw status
