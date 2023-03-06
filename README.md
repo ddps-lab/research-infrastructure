@@ -8,7 +8,7 @@ source setup.sh
 ```
 
 ### 2. kubeadm init
-- Master Node에서 init
+**Master Node에서 init**
 ```
 sudo kubeadm init \
 		--apiserver-advertise-address=0.0.0.0 \
@@ -17,36 +17,13 @@ sudo kubeadm init \
 		--ignore-preflight-errors=ALL
 ```
 
-- Worker Node에서 join
+**Worker Node에서 join**
 Master Node에서 init 완료 시 join에 대한 명령어 확인 후 복사하여 Worker Node에서 실행
 
 
 ### 3. kubectl 설치
-- Master Node에서만 진행
+**Master Node에서만 진행**
 ```
 source kubectl.sh
 ```
 
-## Docker 환경 설정 변경
-  - Docker service 파일 변경
-    ```
-    sudo vi /lib/systemd/system/docker.service
-    ```
-  - ExecStart 구문 뒤에 systemd 관련 명령어 추가
-    ```
-    [Service]
-    Type=notify                                                                    
-    # the default is not to use systemd for cgroups because the delegate issues still
-    # exists and systemd currently does not support the cgroup feature set required
-    # for containers run by docker                                                
-    ExecStart=/usr/bin/dockerd -H fd:// --containerd=/run/containerd/containerd.sock --exec-opt native.cgroupdriver=systemd
-    ExecReload=/bin/kill -s HUP $MAINPID
-    TimeoutSec=0
-    RestartSec=2
-    Restart=always
-    ```
-- Docker 설정 반영
-  ```
-  sudo systemctl daemon-reload
-  sudo systemctl restart docker
-  ```
