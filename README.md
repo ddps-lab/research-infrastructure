@@ -6,23 +6,9 @@ DDPS 연구실 실험 환경을 위한 쿠버네티스 인프라 구축
 ```
 source setup.sh
 ```
-### 2. kubelet 설치를 위한 세팅
-```
-sudo containerd config default | sudo tee /etc/containerd/config.toml
-sudo mkdir -p /etc/containerd
-```
 
-```
-sudo vim /etc/containerd/config.toml
-```
-위의 파일 내용 중 <br/>
-**SystemdCgroup = true** <br/>
-로 변경 
-
-```
-sudo systemctl restart containerd
-```
-### 3. kubeadm init
+### 2. kubeadm init
+- Master Node에서 init
 ```
 sudo kubeadm init \
 		--apiserver-advertise-address=0.0.0.0 \
@@ -31,7 +17,12 @@ sudo kubeadm init \
 		--ignore-preflight-errors=ALL
 ```
 
-### 4. kubelet 설치
+- Worker Node에서 join
+Master Node에서 init 완료 시 join에 대한 명령어 확인 후 복사하여 Worker Node에서 실행
+
+
+### 3. kubectl 설치
+- Master Node에서만 진행
 ```
 source kubectl.sh
 ```
