@@ -27,3 +27,12 @@ sudo kubeadm init \
 source kubectl.sh
 ```
 
+## Inference Serving 서버 구동
+### bentoml 프레임워크 설치
+```
+pip install bentoml
+```
+### bentoml 기반 도커 이미지 빌드
+```
+bentoml build
+```
