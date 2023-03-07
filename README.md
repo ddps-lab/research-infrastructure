@@ -27,6 +27,12 @@ sudo kubeadm init \
 source kubectl.sh
 ```
 
+### 4. CNI 설정
+**calico cni 생성**
+```
+kubectl apply -f https://github.com/flannel-io/flannel/releases/latest/download/kube-flannel.yml
+```
+
 ## Inference Serving 서버 구동
 ### bentoml 프레임워크 설치
 ```
