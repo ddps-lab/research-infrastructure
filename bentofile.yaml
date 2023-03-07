@@ -5,4 +5,5 @@ python:
   packages:
     - numpy
     - torch
+    - torchvision
     - Pillow
