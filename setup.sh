@@ -20,9 +20,11 @@ sudo apt-get install -y docker-ce docker-ce-cli containerd.io
 sudo systemctl enable docker
 sudo systemctl start docker
 
-# bentoml 관련 라이브러리 설치
+# ml serving 관련 라이브러리 설치
 pip install git+https://github.com/bentoml/bentoml
 pip install Pillow
+pip install torch
+pip install torchvision
 
 # Swap off
 sudo swapoff -a && sudo sed -i '/swap/s/^/#/' /etc/fstab
