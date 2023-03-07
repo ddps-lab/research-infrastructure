@@ -33,12 +33,12 @@ sudo ufw allow 10251/tcp
 sudo ufw allow 10252/tcp
 sudo ufw status
 
-# Worker
-sudo ufw enable
-sudo ufw allow 22/tcp
-sudo ufw allow 10250/tcp
-sudo ufw allow 30000:32767/tcp
-sudo ufw status
+# # Worker
+# sudo ufw enable
+# sudo ufw allow 22/tcp
+# sudo ufw allow 10250/tcp
+# sudo ufw allow 30000:32767/tcp
+# sudo ufw status
 
 
 # Set iptable
@@ -84,7 +84,7 @@ curl -sSL "https://raw.githubusercontent.com/kubernetes/release/${RELEASE_VERSIO
 sudo apt -y install conntrack
 
 #kubectl 설치를 위한 세팅
-containerd config default | tee /etc/containerd/config.toml
+sudo containerd config default | sudo tee /etc/containerd/config.toml
 sudo sed -i 's/SystemdCgroup = false/SystemdCgroup = true/g' /etc/containerd/config.toml  
 sudo service containerd restart
 sudo service kubelet restart
