@@ -3,7 +3,7 @@ include:
   - "*.py"
 python:
   packages:
-    - numpy
     - torch
-    - "torchvision==0.9.2 --extra-index-url https://download.pytorch.org/whl/lts/1.8/cpu"
+    - torchvision
+    - numpy
     - Pillow
