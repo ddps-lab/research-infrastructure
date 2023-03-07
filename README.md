@@ -35,4 +35,6 @@ pip install bentoml
 ### bentoml 기반 도커 이미지 빌드
 ```
 bentoml build
+
+bentoml containerize <name:tag>
 ```
