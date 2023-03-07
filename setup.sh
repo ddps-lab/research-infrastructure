@@ -22,7 +22,7 @@ sudo systemctl start docker
 
 # ml serving 관련 라이브러리 설치
 sudo apt install -y python3-pip
-pip install git+https://github.com/bentoml/bentoml
+pip install bentoml
 pip install Pillow
 pip install torch
 pip install torchvision
