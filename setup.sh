@@ -95,3 +95,8 @@ sudo sed -i 's/SystemdCgroup = false/SystemdCgroup = true/g' /etc/containerd/con
 sudo service containerd restart
 sudo service kubelet restart
 sudo systemctl enable kubelet
+
+#ubuntu user docker 권한 부여
+sudo /usr/sbin/groupadd -f docker
+sudo /usr/sbin/usermod -aG docker ubuntu
+sudo chown ubuntu:docker /var/run/docker.sock
