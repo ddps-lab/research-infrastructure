@@ -85,6 +85,6 @@ sudo apt -y install conntrack
 
 #kubectl 설치를 위한 세팅
 containerd config default | tee /etc/containerd/config.toml
-sed -i 's/SystemdCgroup = false/SystemdCgroup = true/g' /etc/containerd/config.toml  
-service containerd restart
-service kubelet restart
+sudo sed -i 's/SystemdCgroup = false/SystemdCgroup = true/g' /etc/containerd/config.toml  
+sudo service containerd restart
+sudo service kubelet restart
