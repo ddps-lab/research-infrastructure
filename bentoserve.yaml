@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: bentoserve
+  name: bentoserve
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: bentoserve
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: bentoserve
+    spec:
+      containers:
+      - image: pytorch_resnet50
+        imagePullPolicy: Never
+        name: pytorch-resnet50-snxpp
+        resources: {}
+status: {}
