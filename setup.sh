@@ -94,3 +94,4 @@ sudo containerd config default | sudo tee /etc/containerd/config.toml
 sudo sed -i 's/SystemdCgroup = false/SystemdCgroup = true/g' /etc/containerd/config.toml  
 sudo service containerd restart
 sudo service kubelet restart
+sudo chmod 666 /var/run/docker.sock
