@@ -46,5 +46,5 @@ bentoml containerize <name:tag>
 ```
 ### 쿠버네티스에 배포
 ```
-kubectl apply -f bentomlserve.yaml
+kubectl apply -f bentoserve.yaml
 ```
