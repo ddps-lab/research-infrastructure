@@ -1,4 +1,4 @@
-service: "service:svc"
+service: "bentoml_predict:svc"
 include:
   - "*.py"
 python:
