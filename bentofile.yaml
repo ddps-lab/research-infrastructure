@@ -4,5 +4,6 @@ include:
 python:
   packages:
     - torch
+    - torchvision
     - numpy
     - Pillow
