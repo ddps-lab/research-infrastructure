@@ -28,9 +28,20 @@ source kubectl.sh
 ```
 
 ### 4. CNI 설정
-**calico cni 생성**
+**flannel cni 생성**
 ```
 kubectl apply -f https://github.com/flannel-io/flannel/releases/latest/download/kube-flannel.yml
+```
+**에러 발생시**
+```
+sudo vim /run/flannel/subnet.env
+```
+해당 내용 추가
+```
+FLANNEL_NETWORK=10.244.0.0/16 // 게이트웨이
+FLANNEL_SUBNET=10.244.0.1/24 // 서브넷
+FLANNEL_MTU=1450
+FLANNEL_IPMASQ=true
 ```
 
 ## Inference Serving 서버 구동
