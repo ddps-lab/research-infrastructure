@@ -55,6 +55,12 @@ bentoml build
 
 bentoml containerize <name:tag>
 ```
+**메모리 관련 에러 발생시**
+```
+docker builder prune --filter type=exec.cachemount
+docker volume prune
+```
+
 ### 쿠버네티스에 배포
 ```
 kubectl apply -f bentoserve.yaml
