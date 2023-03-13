@@ -6,12 +6,6 @@ metadata:
     app: bentoserve
   name: bentoserve
 spec:
-  ports:
-    - port: 80
-      protocol: TCP
-      targetPort: 5000
-  selector:
-    app: bentoserve
   replicas: 1
   selector:
     matchLabels:
@@ -28,5 +22,5 @@ spec:
         name: pytorch-resnet50-snxpp
         resources: {}
         ports:
-        - containerPort: 5000
+        - containerPort: 80
 status: {}
