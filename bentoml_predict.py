@@ -25,5 +25,5 @@ svc = bentoml.Service("pytorch_resnet50", runners=[runner])
 def predict(input_img: PILImage):
     img_arr = np.array(input_img)/255.0
     input_arr = np.expand_dims(img_arr, 0).astype("float32")
-    output_tensor = mnist_runner.predict.run(input_arr)
+    output_tensor = runner.predict.run(input_arr)
     return output_tensor.numpy()
