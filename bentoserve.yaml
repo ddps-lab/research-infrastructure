@@ -6,6 +6,12 @@ metadata:
     app: bentoserve
   name: bentoserve
 spec:
+  ports:
+    - port: 80
+      protocol: TCP
+      targetPort: 5000
+  selector:
+    app: bentoserve
   replicas: 1
   selector:
     matchLabels:
