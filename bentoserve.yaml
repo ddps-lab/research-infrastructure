@@ -6,6 +6,10 @@ metadata:
     app: bentoserve
   name: bentoserve
 spec:
+  ports:
+  - name: predict
+    port: 5000
+    targetPort: 5000
   replicas: 1
   selector:
     matchLabels:
@@ -21,4 +25,6 @@ spec:
       - image: kmubigdata/mlserving:r522t5wbkgs2zfyq
         name: pytorch-resnet50-snxpp
         resources: {}
+        ports:
+        - containerPort: 5000
 status: {}
