@@ -7,7 +7,7 @@ metadata:
 spec:
   ports:
   - name: predict
-    port: 5000
+    port: 80
     targetPort: 5000
   selector:
     app: bentoserve
