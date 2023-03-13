@@ -3,6 +3,7 @@
 sudo apt-get update
  
 sudo apt-get install -y \
+    apt-transport-https \ 
     ca-certificates \
     curl \
     gnupg \
@@ -27,33 +28,13 @@ pip install Pillow
 pip install torch
 pip install torchvision
 
-# Swap off
-sudo swapoff -a && sudo sed -i '/swap/s/^/#/' /etc/fstab
-
-# Master
-sudo ufw enable
-sudo ufw allow 22/tcp
-sudo ufw allow 6443/tcp
-sudo ufw allow 2379:2380/tcp
-sudo ufw allow 10250/tcp
-sudo ufw allow 10251/tcp
-sudo ufw allow 10252/tcp
-sudo ufw status
-
-# # Worker
-# sudo ufw enable
-# sudo ufw allow 22/tcp
-# sudo ufw allow 10250/tcp
-# sudo ufw allow 30000:32767/tcp
-# sudo ufw status
-
-
 # Set iptable
 cat <<EOF | sudo tee /etc/modules-load.d/k8s.conf
 br_netfilter
 EOF
  
 cat <<EOF | sudo tee /etc/sysctl.d/k8s.conf
+net.ipv4.ip_forward=1
 net.bridge.bridge-nf-call-ip6tables = 1
 net.bridge.bridge-nf-call-iptables = 1
 EOF
