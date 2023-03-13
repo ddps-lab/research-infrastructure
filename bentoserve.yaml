@@ -6,11 +6,6 @@ metadata:
     app: bentoserve
   name: bentoserve
 spec:
-  type: NodePort
-  ports:
-  - name: predict
-    port: 5000
-    targetPort: 5000
   replicas: 1
   selector:
     matchLabels:
