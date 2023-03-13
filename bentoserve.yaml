@@ -18,8 +18,7 @@ spec:
         app: bentoserve
     spec:
       containers:
-      - image: pytorch_resnet50
-        imagePullPolicy: Never
+      - image: kmubigdata/mlserving
         name: pytorch-resnet50-snxpp
         resources: {}
 status: {}
