@@ -9,9 +9,10 @@ spec:
   - name: predict
     port: 5000
     targetPort: 5000
+    nodePort: 31000
   selector:
     app: bentoserve
-  type: LoadBalancer
+  type: NodePort
 ---
 apiVersion: apps/v1
 kind: Deployment
