@@ -22,5 +22,5 @@ spec:
         name: pytorch-resnet50-snxpp
         resources: {}
         ports:
-        - containerPort: 5000
+        - containerPort: 3000
 status: {}
