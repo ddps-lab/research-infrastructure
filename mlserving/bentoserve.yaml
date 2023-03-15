@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: bentoserve
+  name: bentoserve
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: bentoserve
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: bentoserve
+    spec:
+      containers:
+      - image: kmubigdata/mlserving:r522t5wbkgs2zfyq
+        name: pytorch-resnet50-snxpp
+        args: ["bentoml", "serve"]
+        resources: {}
+        ports:
+        - containerPort: 5000
+status: {}
