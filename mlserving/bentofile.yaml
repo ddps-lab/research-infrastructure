@@ -1,0 +1,9 @@
+service: "bentoml_predict:svc"
+include:
+  - "*.py"
+python:
+  packages:
+    - torch
+    - torchvision
+    - numpy
+    - Pillow
