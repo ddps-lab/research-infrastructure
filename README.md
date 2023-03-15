@@ -4,30 +4,42 @@ DDPS 연구실 실험 환경을 위한 쿠버네티스 인프라 구축
 ## 세팅 순서
 ### 1. Docker, Kubeadm 등 필수 패키지 설치 및 linux 설정
 ```
-source setup.sh
+source infra/setup.sh
 ```
 
 ### 2. kubeadm init
-**Master Node에서 init**
 ```
+publicip=$(curl http://169.254.169.254/latest/meta-data/public-ipv4)
 sudo kubeadm init \
 		--apiserver-advertise-address=0.0.0.0 \
-		--pod-network-cidr=<public subnet cidr> \
-		--apiserver-cert-extra-sans=<master node public ip> \
-		--ignore-preflight-errors=ALL
+		--pod-network-cidr=172.16.0.0/16  \
+		--apiserver-cert-extra-sans=$publicip
 ```
 
 **Worker Node에서 join** <br/>
 - Master Node에서 init 완료 시 join에 대한 명령어 확인 후 복사하여 Worker Node에서 실행
 
 
-### 3. kubectl 설치
+### 3. kubectl 설정
 **Master Node에서만 진행**
+**Root 계정에서 작업시**
 ```
-source kubectl.sh
+echo "export KUBECONFIG=/etc/kubernetes/admin.conf" >> ~/.profile
+source ~/.profile
+```
+**일반 사용자에서 작업시**
+```
+mkdir -p $HOME/.kube
+sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+sudo chown $(id -u):$(id -g) $HOME/.kube/config
 ```
 
 ### 4. CNI 설정
+**calico cni 생성**
+```
+kubectl create -f https://raw.githubusercontent.com/projectcalico/calico/v3.25.0/manifests/tigera-operator.yaml
+```
+
 **flannel cni 생성**
 ```
 kubectl apply -f https://github.com/flannel-io/flannel/releases/latest/download/kube-flannel.yml
