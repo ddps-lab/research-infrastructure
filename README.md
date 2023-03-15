@@ -4,6 +4,7 @@ DDPS 연구실 실험 환경을 위한 쿠버네티스 인프라 구축
 ## 세팅 순서
 ### 1. Docker, Kubeadm 등 필수 패키지 설치 및 linux 설정
 ```
+sudo su
 source infra/setup.sh
 ```
 
