@@ -38,7 +38,15 @@ sudo chown $(id -u):$(id -g) $HOME/.kube/config
 ### 4. CNI 설정
 **calico cni 생성**
 ```
-kubectl create -f https://raw.githubusercontent.com/projectcalico/calico/v3.25.0/manifests/tigera-operator.yaml
+#calico 설치
+calico_version="v3.25.0"
+kubectl create -f https://raw.githubusercontent.com/projectcalico/calico/$calico_version/manifests/calico.yaml
+
+#kubectl-calico 설치
+arch="arm64"
+curl -L https://github.com/projectcalico/calico/releases/latest/download/calicoctl-linux-$arch -o kubectl-calico
+mv kubectl-calico /usr/bin
+chmod +x /usr/bin/kubectl-calico
 ```
 
 **flannel cni 생성**
