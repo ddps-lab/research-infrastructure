@@ -1,6 +1,6 @@
 variable "cluster_prefix" {
   type = string
-  default = "mhsong-k8s"
+  default = "ddps-k8s"
 }
 
 variable "master_node_number" {

@@ -1,6 +1,6 @@
 variable "vpc_name" {
   type = string
-  default = "mhsong-vpc"
+  default = "ddps-k8s-vpc"
 }
 
 variable "vpc_cidr" {

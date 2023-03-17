@@ -7,8 +7,3 @@ variable "key_name" {
   description = "EC2 Instance Key Name"
   default = "mhsong-seoul-key"
 }
-
-variable "ec2_instance_profile" {
-  type = string
-  default = "ec2ssmrole-mhsong"
-}
