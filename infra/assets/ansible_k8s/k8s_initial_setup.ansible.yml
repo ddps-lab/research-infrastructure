@@ -1,0 +1,96 @@
+# code:language=ansible
+- name: Initial setup for k8s cluster nodes
+  hosts: all
+  gather_facts: false
+
+  tasks:
+    - name: Add modprobe configuration
+      become: true
+      community.general.modprobe:
+        name: br_netfilter
+        state: present
+    - name: Add sysctl configuration
+      become: true
+      ansible.posix.sysctl:
+        name: "{{ item.name }}"
+        value: 1
+        state: present
+        reload: true
+      with_items:
+        - { name: net.ipv4.ip_forward }
+        - { name: net.ipv6.conf.all.forwarding }
+        - { name: net.bridge.bridge-nf-call-iptables }
+        - { name: net.bridge.bridge-nf-call-ip6tables }
+    - name: Update apt cache
+      become: true
+      ansible.builtin.apt:
+        update_cache: true
+    - name: Install containerd
+      become: true
+      ansible.builtin.apt:
+        name: containerd
+        state: present
+    - name: Create containerd config directory
+      become: true
+      ansible.builtin.file:
+        path: /etc/containerd
+        state: directory
+        mode: '0755'
+    - name: Apply containerd default configuration
+      become: true
+      ansible.builtin.shell: containerd config default > /etc/containerd/config.toml
+      changed_when: false
+    - name: Update containerd configuration
+      become: true
+      ansible.builtin.replace:
+        path: /etc/containerd/config.toml
+        regexp: 'SystemdCgroup = false'
+        replace: 'SystemdCgroup = true'
+      notify:
+        - Restart containerd
+    - name: Install apt-transport-https and ca-certificates
+      become: true
+      ansible.builtin.apt:
+        name:
+          - apt-transport-https
+          - ca-certificates
+        state: present
+    - name: Download Kubernetes apt repository key
+      become: true
+      ansible.builtin.get_url:
+        url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
+        dest: /usr/share/keyrings/kubernetes-archive-keyring.gpg
+        mode: "0755"
+    - name: Add Kubernetes apt repository
+      become: true
+      ansible.builtin.apt_repository:
+        repo: deb [signed-by=/usr/share/keyrings/kubernetes-archive-keyring.gpg] https://apt.kubernetes.io/ kubernetes-xenial main
+        state: present
+    - name: Update apt cache
+      become: true
+      ansible.builtin.apt:
+        update_cache: true
+    - name: Install kubelet, kubeadm, and kubectl
+      become: true
+      ansible.builtin.apt:
+        name:
+          - kubelet
+          - kubeadm
+          - kubectl
+        state: present
+    - name: Configure crictl
+      become: true
+      ansible.builtin.copy:
+        dest: /etc/crictl.yaml
+        content: |
+          runtime-endpoint: unix:///run/containerd/containerd.sock
+          image-endpoint: unix:///run/containerd/containerd.sock
+          timeout: 10
+          debug: true
+        mode: "0755"
+  handlers:
+    - name: Restart containerd
+      become: true
+      ansible.builtin.systemd:
+        name: containerd
+        state: restarted

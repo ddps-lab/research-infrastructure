@@ -7,4 +7,5 @@ variable "private_subnet_ids" {}
 variable "ubuntu_ami" {}
 variable "ec2_instance_profile" {}
 variable "key_name" {}
+variable "private_subnet" {}
 variable "install_k8s_user_data" {}
