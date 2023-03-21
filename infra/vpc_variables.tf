@@ -1,6 +1,6 @@
 variable "vpc_name" {
   type = string
-  default = "ddps-k8s-vpc"
+  default = "${var.main_suffix}-k8s-vpc"
 }
 
 variable "vpc_cidr" {

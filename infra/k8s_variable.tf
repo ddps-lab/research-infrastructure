@@ -1,6 +1,6 @@
 variable "cluster_prefix" {
   type = string
-  default = "ddps-k8s"
+  default = "${var.main_suffix}-k8s"
 }
 
 variable "master_node_number" {

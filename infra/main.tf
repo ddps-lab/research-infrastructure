@@ -1,7 +1,7 @@
 provider "aws" {
   #Seoul region
-  region  = "ap-northeast-2"
-  profile = "ddpslab"
+  region  = var.region
+  profile = var.awscli_profile
 }
 
 module "vpc" {
