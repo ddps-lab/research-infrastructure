@@ -53,8 +53,6 @@ Default region name: <REGION> # must be specified
 ## 1. Set main variables in variables.tf
 #### variables.tf에서는 아래와 같은 내용을 설정할 수 있습니다.
 - main_suffix (string) : 생성되는 리소스 Name tag 맨 앞에 붙을 문자열을 지정합니다. 이와 관련해서는 main.tf의 module.k8s의 cluster_prefix와 module.vpc의 vpc_name을 참고합니다.
-- instance_type (string): Kubernetes Cluster의 EC2 Instance의 Instance Type을 지정합니다.
-- key_name (string) : Kubernetes Cluster의 EC2 Instance와 NAT Instance의 EC2 Key Pair를 지정합니다.
 - region (string) : Kubernetes Clsuter를 생성할 AWS Region을 지정합니다. 기본 값은 **"ap-northeast-2" (서울)**입니다.
 - awscli_profile (string) : AWS CLI의 profile name을 지정합니다.
 
@@ -66,5 +64,7 @@ Default region name: <REGION> # must be specified
 
 ## 3. Set Kubernetes variables in k8s_variable.tf
 #### k8s_variable.tf에서는 아래와 같은 내용을 설정할 수 있습니다.
+- instance_type (string): Kubernetes Cluster의 EC2 Instance의 Instance Type을 지정합니다.
+- key_name (string) : Kubernetes Cluster의 EC2 Instance와 NAT Instance의 EC2 Key Pair를 지정합니다.
 - master_node_number (number) : 생성할 Kubernetes master node의 개수를 지정합니다. 기본 값은 **1**입니다.
 - worker_node_number (number) : 생성할 Kubernetes worker node의 개수를 지정합니다. 기본 값은 **1**입니다.
