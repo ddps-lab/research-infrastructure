@@ -47,7 +47,6 @@ resource "aws_instance" "master_node" {
   key_name               = var.key_name
   subnet_id              = var.public_subnet_ids[count.index%length(var.public_subnet_ids)]
   vpc_security_group_ids = [var.cluster_sg_id, aws_security_group.master_sg.id]
-  user_data = var.install_k8s_user_data
   tags = {
     "Name" = "${var.cluster_prefix}-master-${count.index}"
   }

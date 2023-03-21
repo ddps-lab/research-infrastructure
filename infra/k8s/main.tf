@@ -40,7 +40,6 @@ module "master_node" {
   ec2_instance_profile  = var.ec2_instance_profile
   key_name              = var.key_name
   public_subnet         = data.aws_subnet.public_subnet
-  install_k8s_user_data = var.install_k8s_user_data
 }
 
 module "worker_node" {
@@ -55,5 +54,4 @@ module "worker_node" {
   ec2_instance_profile  = var.ec2_instance_profile
   key_name              = var.key_name
   private_subnet        = data.aws_subnet.private_subnet
-  install_k8s_user_data = var.install_k8s_user_data
 }

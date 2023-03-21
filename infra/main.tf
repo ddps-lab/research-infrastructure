@@ -29,7 +29,6 @@ module "k8s" {
   ubuntu_ami            = data.aws_ami.ubuntu_ami
   key_name              = var.key_name
   ec2_instance_profile  = aws_iam_instance_profile.k8s-cluster-ec2role-instance-profile.name
-  install_k8s_user_data = var.install_k8s_user_data
   depends_on = [
     module.vpc
   ]
