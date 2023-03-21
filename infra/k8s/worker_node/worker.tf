@@ -7,7 +7,6 @@ resource "aws_instance" "worker_node" {
   subnet_id              = var.private_subnet_ids[count.index%length(var.private_subnet_ids)]
   source_dest_check      = false
   vpc_security_group_ids = [var.cluster_sg_id]
-  user_data = var.install_k8s_user_data
   tags = {
     "Name" = "${var.cluster_prefix}-worker-${count.index}"
   }

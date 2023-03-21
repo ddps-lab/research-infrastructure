@@ -8,4 +8,3 @@ variable "instance_type" {}
 variable "ubuntu_ami" {}
 variable "key_name" {}
 variable "ec2_instance_profile" {}
-variable "install_k8s_user_data" {}

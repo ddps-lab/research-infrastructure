@@ -1,0 +1,40 @@
+# code:language=ansible
+- name: Create k8s cluster on first master node
+  hosts: first-kube-master
+  gather_facts: false
+
+  tasks:
+    - name: Initialize the cluster
+      become: true
+      ansible.builtin.shell: |
+        publicip=$(curl http://169.254.169.254/latest/meta-data/public-ipv4) \
+        && kubeadm init --pod-network-cidr=172.16.0.0/16 --apiserver-cert-extra-sans=$publicip
+      changed_when: false
+    - name: Create .kube directory
+      become: true
+      become_user: ubuntu
+      ansible.builtin.file:
+        path: $HOME/.kube
+        state: directory
+        mode: "0755"
+    - name: Copy admin.conf to user's kube config
+      become: true
+      ansible.builtin.copy:
+        src: /etc/kubernetes/admin.conf
+        dest: /home/ubuntu/.kube/config
+        remote_src: true
+        owner: "ubuntu"
+        mode: "0750"
+    - name: Install pod network (callico)
+      ansible.builtin.shell: |
+        calico_version="v3.25.0" \
+        && kubectl create -f https://raw.githubusercontent.com/projectcalico/calico/$calico_version/manifests/calico.yaml \
+      changed_when: false
+    - name: Install kubectl-calico
+      become: true
+      ansible.builtin.shell: |
+        arch="arm64" \
+        && curl -L https://github.com/projectcalico/calico/releases/latest/download/calicoctl-linux-$arch -o kubectl-calico \
+        && mv kubectl-calico /usr/bin \
+        && chmod +x /usr/bin/kubectl-calico
+      changed_when: false

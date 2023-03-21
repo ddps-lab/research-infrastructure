@@ -39,7 +39,7 @@ module "master_node" {
   ubuntu_ami            = var.ubuntu_ami
   ec2_instance_profile  = var.ec2_instance_profile
   key_name              = var.key_name
-  install_k8s_user_data = var.install_k8s_user_data
+  public_subnet         = data.aws_subnet.public_subnet
 }
 
 module "worker_node" {
@@ -53,5 +53,5 @@ module "worker_node" {
   ubuntu_ami            = var.ubuntu_ami
   ec2_instance_profile  = var.ec2_instance_profile
   key_name              = var.key_name
-  install_k8s_user_data = var.install_k8s_user_data
+  private_subnet        = data.aws_subnet.private_subnet
 }

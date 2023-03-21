@@ -1,3 +1,4 @@
 *tfstate*
 *lock*
 .terraform
+ansible_hosts.txt
