@@ -6,7 +6,7 @@ provider "aws" {
 
 module "vpc" {
   source               = "./vpc"
-  vpc_name             = var.vpc_name
+  vpc_name             = "${var.main_suffix}-k8s-vpc"
   vpc_cidr             = var.vpc_cidr
   current_region       = data.aws_region.current_region.id
   region_azs           = data.aws_availability_zones.region_azs.names
@@ -19,7 +19,7 @@ module "vpc" {
 
 module "k8s" {
   source                = "./k8s"
-  cluster_prefix        = var.cluster_prefix
+  cluster_prefix        = "${var.main_suffix}-k8s"
   vpc                   = module.vpc.vpc
   public_subnet_ids     = module.vpc.public_subnet_ids
   private_subnet_ids    = module.vpc.private_subnet_ids
