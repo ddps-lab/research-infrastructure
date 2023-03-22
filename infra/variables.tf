@@ -1,6 +1,6 @@
 variable "main_suffix" {
   type = string
-  default = "ddps"
+  default = "<>"
 }
 
 variable "instance_type" {
@@ -10,15 +10,15 @@ variable "instance_type" {
 variable "key_name" {
   type = string
   description = "EC2 Instance Key Name"
-  default = "mhsong-seoul-key"
+  default = "<>"
 }
 
 variable "region" {
   type = string
-  default = "ap-northeast-2"
+  default = "<>"
 }
 
 variable "awscli_profile" {
   type = string
-  default = "ddpslab"
+  default = "<>"
 }

@@ -9,7 +9,8 @@
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 
 #Install packages
-brew install terraform ansible awscli aws-session-manager-plugin
+brew install terraform ansible awscli
+brew install --cask session-manager-plugin
 ```
 
 ## 2-a. ~/.ssh/config setting for SSH connection using session manager

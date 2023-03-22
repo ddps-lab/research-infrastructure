@@ -2,3 +2,4 @@
 *lock*
 .terraform
 ansible_hosts.txt
+infra/variables.tf
