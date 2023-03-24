@@ -83,6 +83,11 @@ docker volume prune
 ```
 
 ### 쿠버네티스에 배포
+로컬 환경에서 docker hub에 배포되어 있는 docker image를 crictl로 pull
+```
+crictl pull <docker hub path/name:tag>
+```
+
 ```
 kubectl apply -f bentoserve.yaml
 ```
