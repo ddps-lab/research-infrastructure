@@ -9,7 +9,7 @@ resource "aws_security_group" "master_sg" {
     security_groups  = []
     self             = false
     to_port          = 22
-  },{
+    }, {
     cidr_blocks      = ["0.0.0.0/0"]
     description      = ""
     from_port        = 6443
@@ -45,9 +45,14 @@ resource "aws_instance" "master_node" {
   instance_type          = var.instance_type
   iam_instance_profile   = var.ec2_instance_profile
   key_name               = var.key_name
-  subnet_id              = var.public_subnet_ids[count.index%length(var.public_subnet_ids)]
+  subnet_id              = var.public_subnet_ids[count.index % length(var.public_subnet_ids)]
   vpc_security_group_ids = [var.cluster_sg_id, aws_security_group.master_sg.id]
   tags = {
     "Name" = "${var.cluster_prefix}-master-${count.index}"
+  }
+  root_block_device {
+    volume_size           = 50    # 볼륨 크기를 지정합니다.
+    volume_type           = "gp2" # 볼륨 유형을 지정합니다.
+    delete_on_termination = true  # 인스턴스가 종료될 때 볼륨도 함께 삭제되도록 설정합니다.
   }
 }
