@@ -18,7 +18,7 @@ spec:
         app: bentoserve
     spec:
       containers:
-      - image: kmubigdata/mlserving:hztjsrwdakj52rpn
+      - image: kmubigdata/mlserving:6k2uzywlv2jkmiqg
         name: pytorch-resnet50
         args: ["bentoml", "serve"]
         resources: {}
