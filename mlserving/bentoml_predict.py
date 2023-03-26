@@ -1,9 +1,10 @@
 import numpy as np
 import bentoml
-from bentoml.io import NumpyNdarray, Image
+from bentoml.io import JSON, Image
 from PIL.Image import Image as PILImage
 from torchvision.models import resnet50, ResNet50_Weights
 import time
+import json
 
 weights = ResNet50_Weights.DEFAULT
 model = resnet50(weights=weights)
@@ -23,7 +24,7 @@ runner = bentoml.pytorch.get("bentoml_resnet50").to_runner()
 svc = bentoml.Service("pytorch_resnet50", runners=[runner])
 
 
-@svc.api(input=Image(), output=NumpyNdarray(dtype="int64"))
+@svc.api(input=Image(), output=JSON())
 async def predict(input_img: PILImage):
     start_time = time.time()
     img_arr = np.array(input_img)/255.0
@@ -31,4 +32,5 @@ async def predict(input_img: PILImage):
     input_arr = np.transpose(input_arr, (0, 3, 1, 2))
     output_tensor = await runner.async_run(input_arr)
     inference_time = time.time() - start_time
-    return inference_time
+    output = json.dumps({"inference_time": inference_time})
+    return output
