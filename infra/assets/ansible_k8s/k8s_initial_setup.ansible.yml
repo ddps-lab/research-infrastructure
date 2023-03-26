@@ -88,9 +88,22 @@
           timeout: 10
           debug: true
         mode: "0755"
+    - name: Install pip
+      become: true
+      ansible.builtin.apt:
+        name:
+          - python3-pip
+        state: present
+    - name: Install Bentoml
+      become: true
+      ansible.builtin.command: pip install bentoml
+    - name: update path
+      become: false
+      ansible.builtin.shell: source ~/.profile
   handlers:
     - name: Restart containerd
       become: true
       ansible.builtin.systemd:
         name: containerd
         state: restarted
+   
