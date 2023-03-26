@@ -19,8 +19,7 @@ spec:
     spec:
       containers:
       - image: kmubigdata/mlserving:hztjsrwdakj52rpn
-        name: pytorch-resnet50-snxpp
-        args: ["bentoml", "serve"]
+        name: pytorch-resnet50
         resources: {}
         ports:
         - containerPort: 5000
