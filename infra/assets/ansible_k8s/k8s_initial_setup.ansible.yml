@@ -97,9 +97,6 @@
     - name: Install Bentoml
       become: true
       ansible.builtin.command: pip install bentoml
-    - name: update path
-      become: false
-      ansible.builtin.shell: source ~/.profile
   handlers:
     - name: Restart containerd
       become: true
