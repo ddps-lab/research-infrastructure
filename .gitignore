@@ -3,3 +3,5 @@
 .terraform
 ansible_hosts.txt
 infra/variables.tf
+infra/k8s_variables.tf
+infra/vpc_variables.tf
