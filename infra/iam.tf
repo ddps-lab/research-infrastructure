@@ -27,7 +27,7 @@ resource "aws_iam_instance_profile" "k8s-cluster-ec2role-instance-profile" {
 }
 
 resource "aws_iam_role" "nat-ec2role" {
-  name = "${var.main_suffix}-k8s-nat-ec2-role"
+  name = "${var.main_suffix}-nat-ec2-role"
   assume_role_policy = data.aws_iam_policy_document.ec2-service-for-iam-role.json
 }
 
@@ -37,6 +37,6 @@ resource "aws_iam_role_policy_attachment" "nat-ec2role-attach-ssm-policy" {
 }
 
 resource "aws_iam_instance_profile" "nat-ec2role-instance-profile" {
-  name = "${var.main_suffix}-k8s-nat-ec2-role-instnace-profile"
+  name = "${var.main_suffix}-nat-ec2-role-instnace-profile"
   role = aws_iam_role.nat-ec2role.name
 }
