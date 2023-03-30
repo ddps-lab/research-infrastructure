@@ -6,7 +6,7 @@ metadata:
     app: bentoserve
   name: bentoserve
 spec:
-  replicas: 1
+  replicas: 5
   selector:
     matchLabels:
       app: bentoserve
@@ -20,7 +20,6 @@ spec:
       containers:
       - image: kmubigdata/mlserving:latest
         name: pytorch-resnet50
-        args: ["bentoml", "serve"]
         resources: {}
         ports:
         - containerPort: 3000
