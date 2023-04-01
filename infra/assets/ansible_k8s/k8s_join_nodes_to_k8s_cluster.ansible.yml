@@ -1,20 +1,73 @@
-- name: Get join command from first master node
+- name: Get IPv4 Address from first master node
   hosts: first-kube-master
   gather_facts: false
   tasks:
-    - name: Get join command
-      ansible.builtin.command: kubeadm token create --print-join-command
-      register: join_command_raw
+    - name: Get IPv4 Address
+      ansible.builtin.uri:
+        url: http://169.254.169.254/latest/meta-data/local-ipv4
+        return_content: true
+      register: first_master_ipv4_addr
       changed_when: false
-    - name: Set join command
+    - name: Set IPv4 Address
       ansible.builtin.set_fact:
-        join_command: "{{ join_command_raw.stdout_lines[0] }}"
+        first_master_ipv4_addr: "{{ first_master_ipv4_addr.content }}"
 
 - name: Join worker nodes to k8s cluster
   hosts: kube-node
   gather_facts: false
   tasks:
+    - name: Create cloud configuration for AWS Cloud Controller Manager
+      become: true
+      ansible.builtin.copy:
+        dest: /etc/kubernetes/cloud-config
+        content: |
+          [Global]
+          zone=
+          vpc=VPC_ID
+          subnetId=
+          routeTableId=
+          roleArn=
+          kubernetesClusterTag=CLUSTER_NAME
+          kubernetesClusterId=CLUSTER_NAME
+          disableSecurityGroupIngress=false
+          disableStrictZoneCheck=false
+          elbSecurityGroup=
+        mode: "0755"
+    - name: Modify cloud configuration for AWS Cloud Controller Manager
+      become: true
+      ansible.builtin.shell: |
+        CLUSTER_NAME="{{ CLUSTER_NAME }}"
+        INTERFACE=$(curl http://169.254.169.254/latest/meta-data/network/interfaces/macs/)
+        VPC_ID=$(curl http://169.254.169.254/latest/meta-data/network/interfaces/macs/$INTERFACE/vpc-id)
+        sed -i "s/VPC_ID/${VPC_ID}/g" /etc/kubernetes/cloud-config
+        sed -i "s/CLUSTER_NAME/${CLUSTER_NAME}/g" /etc/kubernetes/cloud-config
+      changed_when: false
+    - name: Create initial cluster join configuartion file
+      become: true
+      ansible.builtin.shell: |
+        kubeadm config print join-defaults > /tmp/join.yaml
+      changed_when: false
+    - name: Configure join configuration file
+      become: true
+      ansible.builtin.shell: |
+        CONTROL_PLANE_IP="{{ hostvars[groups['first-kube-master'].0].first_master_ipv4_addr }}"
+        HOSTNAME=$(hostname)
+        HOSTNAME_FQDN=$(hostname -f)
+        AVAILABILITY_ZONE=$(curl http://169.254.169.254/latest/meta-data/placement/availability-zone)
+        INSTANCE_ID=$(curl http://169.254.169.254/latest/meta-data/instance-id)
+        PROVIDER_ID="aws:///${AVAILABILITY_ZONE}/$INSTANCE_ID"
+        sed -i "15a\
+        kubeletExtraArgs:\ncloud-provider: aws\ncloud-config: /etc/kubernetes/cloud-config\nprovider-id: ${PROVIDER_ID}\
+        " /tmp/join.yaml
+        sed -i "s/kube-apiserver/$CONTROL_PLANE_IP/g" /tmp/join.yaml
+        sed -i "s/$HOSTNAME/$HOSTNAME_FQDN/g" /tmp/join.yaml
+        sed -i "s/^.*kubeletExtraArgs:/  &/g" /tmp/join.yaml
+        sed -i "s/^.*cloud-provider: aws/    &/g" /tmp/join.yaml
+        sed -i "s/^.*cloud-config:/    &/g" /tmp/join.yaml
+        sed -i "s/^.*provider-id:/    &/g" /tmp/join.yaml
+      changed_when: false
     - name: Join cluster
       become: true
-      ansible.builtin.command: "{{ hostvars[groups['first-kube-master'].0].join_command }}"
+      ansible.builtin.shell: |
+        kubeadm join --config /tmp/join.yaml
       changed_when: false

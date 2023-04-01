@@ -4,11 +4,69 @@
   gather_facts: false
 
   tasks:
+    - name: Create cloud configuration for AWS Cloud Controller Manager
+      become: true
+      ansible.builtin.copy:
+        dest: /etc/kubernetes/cloud-config
+        content: |
+          [Global]
+          zone=
+          vpc=VPC_ID
+          subnetId=
+          routeTableId=
+          roleArn=
+          kubernetesClusterTag=CLUSTER_NAME
+          kubernetesClusterId=CLUSTER_NAME
+          disableSecurityGroupIngress=false
+          disableStrictZoneCheck=false
+          elbSecurityGroup=
+        mode: "0755"
+
+    - name: Modify cloud configuration for AWS Cloud Controller Manager
+      become: true
+      ansible.builtin.shell: |
+        CLUSTER_NAME="{{ CLUSTER_NAME }}"
+        INTERFACE=$(curl http://169.254.169.254/latest/meta-data/network/interfaces/macs/)
+        VPC_ID=$(curl http://169.254.169.254/latest/meta-data/network/interfaces/macs/$INTERFACE/vpc-id)
+        sed -i "s/VPC_ID/${VPC_ID}/g" /etc/kubernetes/cloud-config
+        sed -i "s/CLUSTER_NAME/${CLUSTER_NAME}/g" /etc/kubernetes/cloud-config
+      changed_when: false
+    - name: Create initial cluster init configuartion file
+      become: true
+      ansible.builtin.shell: |
+        kubeadm config print init-defaults > /tmp/init.yaml
+      changed_when: false
+    - name: Configure init configuration file
+      become: true
+      ansible.builtin.shell: |
+        CLUSTER_NAME="{{ CLUSTER_NAME }}"
+        sed -i 's/advertiseAddress: 1.2.3.4/advertiseAddress: 0.0.0.0/g' /tmp/init.yaml
+        HOSTNAME_FQDN=$(hostname -f)
+        sed -i "s/name: node/name: ${HOSTNAME_FQDN}/g" /tmp/init.yaml
+        sed -i "s/clusterName: kubernetes/clusterName: ${CLUSTER_NAME}/g" /tmp/init.yaml
+        AVAILABILITY_ZONE=$(curl http://169.254.169.254/latest/meta-data/placement/availability-zone)
+        INSTANCE_ID=$(curl http://169.254.169.254/latest/meta-data/instance-id)
+        PROVIDER_ID="aws:///${AVAILABILITY_ZONE}/$INSTANCE_ID"
+        sed -i "14a\
+        kubeletExtraArgs:\ncloud-provider: aws\ncloud-config: /etc/kubernetes/cloud-config\nprovider-id: ${PROVIDER_ID}\
+        " /tmp/init.yaml
+        sed -i "24a\
+        extraArgs:\ncloud-provider: aws\
+        " /tmp/init.yaml
+        sed -i "s/controllerManager: {}/controllerManager:/g" /tmp/init.yaml
+        sed -i "31a\
+        extraArgs:\ncloud-provider: aws\
+        " /tmp/init.yaml
+        sed -i "s/^.*kubeletExtraArgs:/  &/g" /tmp/init.yaml
+        sed -i "s/^.*extraArgs:/  &/g" /tmp/init.yaml
+        sed -i "s/^.*cloud-provider: aws/    &/g" /tmp/init.yaml
+        sed -i "s/^.*cloud-config:/    &/g" /tmp/init.yaml
+        sed -i "s/^.*provider-id:/    &/g" /tmp/init.yaml
+      changed_when: false
     - name: Initialize the cluster
       become: true
       ansible.builtin.shell: |
-        publicip=$(curl http://169.254.169.254/latest/meta-data/public-ipv4) \
-        && kubeadm init --pod-network-cidr=172.16.0.0/16 --apiserver-cert-extra-sans=$publicip
+        kubeadm init --config /tmp/init.yaml
       changed_when: false
     - name: Create .kube directory
       become: true
