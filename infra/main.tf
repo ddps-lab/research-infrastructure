@@ -15,6 +15,7 @@ module "vpc" {
   ubuntu_ami           = data.aws_ami.ubuntu_ami
   key_name             = var.key_name
   ec2_instance_profile = aws_iam_instance_profile.nat-ec2role-instance-profile.name
+  cluster_prefix        = "${var.main_suffix}-k8s"
 }
 
 module "k8s" {
