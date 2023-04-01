@@ -12,6 +12,6 @@ variable "public_subnet_cidrs" {
 variable "private_subnet_cidrs" {
   description = "cidr should be match with private_subnet_number"
   type = list(string)
-  # default = ["192.168.11.0/24", "192.168.21.0/24"]
-  default = ["192.168.11.0/24"]
+  default = ["192.168.11.0/24", "192.168.21.0/24"]
+  # default = ["192.168.11.0/24"]
 }

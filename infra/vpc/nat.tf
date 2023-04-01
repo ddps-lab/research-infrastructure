@@ -41,13 +41,13 @@ resource "aws_security_group" "nat-sg" {
 
 resource "aws_instance" "NAT-Instance" {
   # count = "${length(var.region_azs)}"
-  count                  = 1
+  count                  = length(var.private_subnet_cidrs)
   ami                    = var.ubuntu_ami.id
   instance_type          = "t4g.micro"
-  availability_zone      = var.region_azs[count.index]
+  availability_zone      = var.region_azs[0]
   iam_instance_profile   = var.ec2_instance_profile
   key_name               = var.key_name
-  subnet_id              = aws_subnet.public_subnets[count.index].id
+  subnet_id              = aws_subnet.public_subnets[0].id
   source_dest_check      = false
   vpc_security_group_ids = [aws_security_group.nat-sg.id]
   user_data              = <<-EOF
