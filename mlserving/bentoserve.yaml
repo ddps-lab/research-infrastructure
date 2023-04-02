@@ -30,7 +30,7 @@ metadata:
   name: bentoserve-service
   annotations:
     alb.ingress.kubernetes.io/target-type: ip
-    alb.ingress.kubernetes.io/target-group-arn: arn:aws:elasticloadbalancing:us-west-2:123456789012:targetgroup/my-target-group/1234567890123456
+    alb.ingress.kubernetes.io/target-group-arn: arn:aws:elasticloadbalancing:us-west-2:741926482963:targetgroup/serve-20230402063614513600000003/5c59033ce5785552
 spec:
   type: ClusterIP
   selector:
