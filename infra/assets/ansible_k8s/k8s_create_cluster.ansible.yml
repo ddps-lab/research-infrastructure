@@ -96,3 +96,7 @@
         && mv kubectl-calico /usr/bin \
         && chmod +x /usr/bin/kubectl-calico
       changed_when: false
+    - name: Install Nginx ingress controller
+      ansible.builtin.shell: |
+        kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.7.0/deploy/static/provider/aws/deploy.yaml
+      changed_when: false
