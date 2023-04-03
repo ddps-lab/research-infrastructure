@@ -45,3 +45,14 @@ resource "null_resource" "join_nodes_to_k8s_cluster" {
     command = "ansible-playbook -i ansible_hosts.txt assets/ansible_k8s/k8s_join_nodes_to_k8s_cluster.ansible.yml --extra-vars 'CLUSTER_NAME=${var.main_suffix}-k8s'"
   }
 }
+
+resource "null_resource" "when_destroy" {
+  provisioner "local-exec" {
+    when = destroy
+    command = "ansible-playbook -i ansible_hosts.txt assets/ansible_k8s/k8s_delete_nginx_ingress_controller.ansible.yml"
+    on_failure = continue
+  }
+  depends_on = [
+    module.k8s
+  ]
+}

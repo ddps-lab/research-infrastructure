@@ -1,0 +1,10 @@
+# code:language=ansible
+- name: Delete nginx ingress controller on the first master node before destroying the VPC.
+  hosts: first-kube-master
+  gather_facts: false
+
+  tasks:
+    - name: Delete Nginx ingress controller
+      ansible.builtin.shell: |
+        kubectl delete -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.7.0/deploy/static/provider/aws/deploy.yaml
+      changed_when: false
