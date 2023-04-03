@@ -16,7 +16,7 @@ locals {
 }
 
 resource "aws_iam_policy" "k8s-cluster-ingress-controller-iam-policy" {
-  name = "${var.main_suffix}-k8s-cluster-alb-ingress-controller-iam-policy"
+  name = "${var.main_suffix}-k8s-cluster-ingress-controller-iam-policy"
   policy = jsonencode(local.ingress-controller-policy-json)
 }
 
