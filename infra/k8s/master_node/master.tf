@@ -47,8 +47,11 @@ resource "aws_instance" "master_node" {
   key_name               = var.key_name
   subnet_id              = var.public_subnet_ids[count.index % length(var.public_subnet_ids)]
   vpc_security_group_ids = [var.cluster_sg_id, aws_security_group.master_sg.id]
+  source_dest_check      = false
   tags = {
-    "Name" = "${var.cluster_prefix}-master-${count.index}"
+    "Name" : "${var.cluster_prefix}-master-${count.index}"
+    "sigs.k8s.io/cluster-api-provider-aws/role" : "control-plane"
+    "kubernetes.io/cluster/${var.cluster_prefix}" : "owned"
   }
   root_block_device {
     volume_size           = 50    # 볼륨 크기를 지정합니다.

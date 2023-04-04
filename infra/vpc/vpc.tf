@@ -28,7 +28,9 @@ resource "aws_subnet" "public_subnets" {
   map_public_ip_on_launch = true
 
   tags = {
-    "Name" = "${var.vpc_name}-public-subnet-${substr(var.region_azs[count.index], -1, 1)}"
+    "Name" : "${var.vpc_name}-public-subnet-${substr(var.region_azs[count.index], -1, 1)}"
+    "kubernetes.io/cluster/${var.cluster_prefix}" : "shared"
+    "kubernetes.io/role/elb" : 1
   }
 }
 
@@ -41,7 +43,9 @@ resource "aws_subnet" "private_subnets" {
   enable_resource_name_dns_a_record_on_launch = true
 
   tags = {
-    "Name" = "${var.vpc_name}-private-subnet-${substr(var.region_azs[count.index], -1, 1)}"
+    "Name" : "${var.vpc_name}-private-subnet-${substr(var.region_azs[count.index], -1, 1)}"
+    "kubernetes.io/cluster/${var.cluster_prefix}" : "shared"
+    "kubernetes.io/role/internal-elb" : 1
   }
 }
 
@@ -55,7 +59,8 @@ resource "aws_route_table" "public_route_table" {
   }
 
   tags = {
-    "Name" = "${var.vpc_name}-public-route-table"
+    "Name" : "${var.vpc_name}-public-route-table"
+    "kubernetes.io/cluster/${var.cluster_prefix}" : "shared"
   }
 }
 
@@ -71,7 +76,8 @@ resource "aws_route_table" "private_route_tables" {
   }
 
   tags = {
-    "Name" = "${var.vpc_name}-private-route-table-${substr(var.region_azs[count.index], -1, 1)}"
+    "Name" : "${var.vpc_name}-private-route-table-${substr(var.region_azs[count.index], -1, 1)}"
+    "kubernetes.io/cluster/${var.cluster_prefix}" : "shared"
   }
 }
 

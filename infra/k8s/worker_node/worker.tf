@@ -8,7 +8,9 @@ resource "aws_instance" "worker_node" {
   source_dest_check      = false
   vpc_security_group_ids = [var.cluster_sg_id]
   tags = {
-    "Name" = "${var.cluster_prefix}-worker-${count.index}"
+    "Name" : "${var.cluster_prefix}-worker-${count.index}"
+    "sigs.k8s.io/cluster-api-provider-aws/role" : "node"
+    "kubernetes.io/cluster/${var.cluster_prefix}" : "owned"
   }
   root_block_device {
     volume_size           = 50    # 볼륨 크기를 지정합니다.

@@ -24,7 +24,7 @@ resource "null_resource" "initial_setup_for_k8s" {
     time_sleep.wait_for_connect_ssh
   ]
   provisioner "local-exec" {
-    command = "ansible-playbook -i ansible_hosts.txt assets/ansible_k8s/k8s_initial_setup.ansible.yml "
+    command = "ansible-playbook -i ansible_hosts.txt assets/ansible_k8s/k8s_initial_setup.ansible.yml"
   }
 }
 
@@ -33,7 +33,7 @@ resource "null_resource" "create_k8s_cluster" {
     null_resource.initial_setup_for_k8s
   ]
   provisioner "local-exec" {
-    command = "ansible-playbook -i ansible_hosts.txt assets/ansible_k8s/k8s_create_cluster.ansible.yml"
+    command = "ansible-playbook -i ansible_hosts.txt assets/ansible_k8s/k8s_create_cluster.ansible.yml --extra-vars 'CLUSTER_NAME=${var.main_suffix}-k8s'"
   }
 }
 
@@ -42,6 +42,17 @@ resource "null_resource" "join_nodes_to_k8s_cluster" {
     null_resource.create_k8s_cluster
   ]
   provisioner "local-exec" {
-    command = "ansible-playbook -i ansible_hosts.txt assets/ansible_k8s/k8s_join_nodes_to_k8s_cluster.ansible.yml"
+    command = "ansible-playbook -i ansible_hosts.txt assets/ansible_k8s/k8s_join_nodes_to_k8s_cluster.ansible.yml --extra-vars 'CLUSTER_NAME=${var.main_suffix}-k8s'"
   }
+}
+
+resource "null_resource" "when_destroy" {
+  provisioner "local-exec" {
+    when = destroy
+    command = "ansible-playbook -i ansible_hosts.txt assets/ansible_k8s/k8s_delete_nginx_ingress_controller.ansible.yml"
+    on_failure = continue
+  }
+  depends_on = [
+    module.k8s
+  ]
 }

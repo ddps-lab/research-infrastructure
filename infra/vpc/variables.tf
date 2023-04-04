@@ -7,3 +7,4 @@ variable "private_subnet_cidrs" {}
 variable "ubuntu_ami" {}
 variable "key_name" {}
 variable "ec2_instance_profile" {}
+variable "cluster_prefix" {}

@@ -52,6 +52,9 @@ with open("ansible_hosts.txt", "r+") as f:
         if "[kube-master]" in line:
             for j in range(0,len(master_node_names)):
                 lines.insert(i + 1, master_node_names[j] + "\n")
+        if "[etcd]" in line:
+            for j in range(0,len(master_node_names)):
+                lines.insert(i + 1, master_node_names[j] + "\n")
     f.seek(0)
     f.truncate()
     f.writelines(lines)

@@ -1,27 +1,67 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: bento-namespace
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
+  namespace: bento-namespace
   creationTimestamp: null
   labels:
-    app: bentoserve
-  name: bentoserve
+    app: bento-app
+  name: bento-app
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: bentoserve
+      app: bento-app
   strategy: {}
   template:
     metadata:
       creationTimestamp: null
       labels:
-        app: bentoserve
+        app: bento-app
     spec:
       containers:
       - image: kmubigdata/mlserving:latest
         name: pytorch-resnet50
-        args: ["bentoml", "serve"]
         resources: {}
         ports:
         - containerPort: 3000
-status: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: bento-namespace
+  name: bento-service
+spec:
+  type: ClusterIP
+  selector:
+    app: bento-app
+  ports:
+    - name: http
+      port: 81
+      targetPort: 3000
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  namespace: bento-namespace
+  name: bento-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /predict
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: <YOUR URL>
+      http:
+        paths:
+        - path: /bento
+          pathType: Prefix
+          backend:
+            service:
+              name: bento-service
+              port:
+                number: 81
