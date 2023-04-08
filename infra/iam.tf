@@ -45,6 +45,12 @@ resource "aws_iam_role_policy_attachment" "k8s-cluster-ec2role-attach-ingress-co
   policy_arn = aws_iam_policy.k8s-cluster-ingress-controller-iam-policy.arn
 }
 
+
+# resource "aws_iam_role_policy_attachment" "k8s-cluster-ec2role-attach-EFS-client-full-access-policy" {
+#   role = aws_iam_role.k8s-cluster-ec2role.name
+#   policy_arn = "arn:aws:iam::aws:policy/AmazonElasticFileSystemClientFullAccess"
+# }
+
 resource "aws_iam_instance_profile" "k8s-cluster-ec2role-instance-profile" {
   name = "${var.main_suffix}-k8s-cluster-ec2-role-instnace-profile"
   role = aws_iam_role.k8s-cluster-ec2role.name

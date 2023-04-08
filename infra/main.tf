@@ -18,16 +18,16 @@ module "vpc" {
   cluster_prefix       = "${var.main_suffix}-k8s"
 }
 
-module "efs-monitoring" {
-  source             = "./efs"
-  efs_for            = "monitoring"
-  cluster_prefix     = "${var.main_suffix}-k8s"
-  vpc                = module.vpc.vpc
-  private_subnet_ids = module.vpc.private_subnet_ids
-  depends_on = [
-    module.vpc
-  ]
-}
+# module "efs-monitoring" {
+#   source             = "./efs"
+#   efs_for            = "monitoring"
+#   cluster_prefix     = "${var.main_suffix}-k8s"
+#   vpc                = module.vpc.vpc
+#   private_subnet_ids = module.vpc.private_subnet_ids
+#   depends_on = [
+#     module.vpc
+#   ]
+# }
 
 module "k8s" {
   source               = "./k8s"
@@ -40,9 +40,9 @@ module "k8s" {
   ubuntu_ami           = data.aws_ami.ubuntu_ami
   key_name             = var.key_name
   ec2_instance_profile = aws_iam_instance_profile.k8s-cluster-ec2role-instance-profile.name
-  monitoring-efs-id    = module.efs-monitoring.efs-id
+  # monitoring-efs-id    = module.efs-monitoring.efs-id
   depends_on = [
     module.vpc,
-    module.efs-monitoring
+    # module.efs-monitoring
   ]
 }
