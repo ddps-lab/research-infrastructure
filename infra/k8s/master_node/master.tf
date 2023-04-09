@@ -45,7 +45,7 @@ resource "aws_instance" "master_node" {
   instance_type          = var.instance_type
   iam_instance_profile   = var.ec2_instance_profile
   key_name               = var.key_name
-  subnet_id              = var.public_subnet_ids[count.index % length(var.public_subnet_ids)]
+  subnet_id              = var.private_subnet_ids[count.index % length(var.private_subnet_ids)]
   vpc_security_group_ids = [var.cluster_sg_id, aws_security_group.master_sg.id]
   source_dest_check      = false
   tags = {

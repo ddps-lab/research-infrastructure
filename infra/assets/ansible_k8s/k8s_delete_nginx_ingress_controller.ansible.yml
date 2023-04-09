@@ -6,5 +6,6 @@
   tasks:
     - name: Delete Nginx ingress controller
       ansible.builtin.shell: |
-        kubectl delete -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.7.0/deploy/static/provider/aws/deploy.yaml
+        nic_version="v1.7.0" && \
+        kubectl delete -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-$nic_version/deploy/static/provider/aws/deploy.yaml
       changed_when: false

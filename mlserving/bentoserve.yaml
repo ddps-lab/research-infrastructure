@@ -2,27 +2,25 @@
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: bento-namespace
+  name: bentoml-namespace
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  namespace: bento-namespace
-  creationTimestamp: null
+  namespace: bentoml-namespace
   labels:
-    app: bento-app
-  name: bento-app
+    app: bentoml-service
+  name: bentoml-service
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: bento-app
+      app: bentoml-service
   strategy: {}
   template:
     metadata:
-      creationTimestamp: null
       labels:
-        app: bento-app
+        app: bentoml-service
     spec:
       containers:
       - image: kmubigdata/mlserving:latest
@@ -31,25 +29,29 @@ spec:
         ports:
         - containerPort: 3000
 ---
+### BentoService
 apiVersion: v1
 kind: Service
 metadata:
-  namespace: bento-namespace
-  name: bento-service
+  labels:
+    app: bentoml-service
+  name: bentoml-service
+  namespace: bentoml-namespace
 spec:
-  type: ClusterIP
-  selector:
-    app: bento-app
   ports:
-    - name: http
-      port: 81
+    - name: predict
+      port: 3000
       targetPort: 3000
+  selector:
+    app: bentoml-service
+  sessionAffinity: None
+  type: ClusterIP
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  namespace: bento-namespace
-  name: bento-ingress
+  namespace: bentoml-namespace
+  name: bentoml-ingress
   annotations:
     nginx.ingress.kubernetes.io/rewrite-target: /predict
 spec:
@@ -62,6 +64,19 @@ spec:
           pathType: Prefix
           backend:
             service:
-              name: bento-service
+              name: bentoml-service
               port:
-                number: 81
+                number: 3000
+---
+### BentoService ServiceMonitor
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: bentoml-service
+  namespace: bentoml-namespace
+spec:
+  selector:
+    matchLabels:
+      app: bentoml-service
+  endpoints:
+  - port: predict

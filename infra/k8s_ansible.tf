@@ -46,6 +46,15 @@ resource "null_resource" "join_nodes_to_k8s_cluster" {
   }
 }
 
+resource "null_resource" "configure_monitoring" {
+  depends_on = [
+    null_resource.join_nodes_to_k8s_cluster
+  ]
+  provisioner "local-exec" {
+    command = "ansible-playbook -i ansible_hosts.txt assets/ansible_k8s/k8s_configure_monitoring.ansible.yml"
+  }
+}
+
 resource "null_resource" "when_destroy" {
   provisioner "local-exec" {
     when = destroy

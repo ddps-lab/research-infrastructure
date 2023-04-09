@@ -85,18 +85,47 @@
         mode: "0750"
     - name: Install pod network (callico)
       ansible.builtin.shell: |
-        calico_version="v3.25.0" \
-        && kubectl create -f https://raw.githubusercontent.com/projectcalico/calico/$calico_version/manifests/calico.yaml \
+        calico_version="v3.25.0" && \
+        kubectl create -f https://raw.githubusercontent.com/projectcalico/calico/$calico_version/manifests/calico.yaml \
       changed_when: false
     - name: Install kubectl-calico
       become: true
       ansible.builtin.shell: |
-        arch="arm64" \
+        arch=$(dpkg --print-architecture) \
         && curl -L https://github.com/projectcalico/calico/releases/latest/download/calicoctl-linux-$arch -o kubectl-calico \
         && mv kubectl-calico /usr/bin \
         && chmod +x /usr/bin/kubectl-calico
       changed_when: false
     - name: Install Nginx ingress controller
       ansible.builtin.shell: |
-        kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.7.0/deploy/static/provider/aws/deploy.yaml
+        nic_version="v1.7.0" && \
+        kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-$nic_version/deploy/static/provider/aws/deploy.yaml
       changed_when: false
+    - name: Install helm
+      ansible.builtin.shell: |
+        set -o pipefail
+        sudo apt-get install apt-transport-https --yes
+        curl https://baltocdn.com/helm/signing.asc | gpg --dearmor | sudo tee /usr/share/keyrings/helm.gpg > /dev/null
+        arch=$(dpkg --print-architecture)
+        apt_list_file="/etc/apt/sources.list.d/helm-stable-debian.list"
+        echo "deb [arch=$arch signed-by=/usr/share/keyrings/helm.gpg] https://baltocdn.com/helm/stable/debian/ all main" | sudo tee $apt_list_file
+        sudo apt-get update
+        sudo apt-get install helm
+      changed_when: false
+      args:
+        executable: /bin/bash
+    # - name: Install Amazon EFS CSI Driver
+    #   ansible.builtin.shell: |
+    #     Release="1.5" \
+    #     && kubectl apply -k "github.com/kubernetes-sigs/aws-efs-csi-driver/deploy/kubernetes/overlays/stable/?ref=release-$Release"
+    #   changed_when: false
+    # - name: Create EFS storageclass
+    #   ansible.builtin.copy:
+    #     dest: /tmp/efssc.yaml
+    #     content: |
+    #       kind: StorageClass
+    #       apiVersion: storage.k8s.io/v1
+    #       metadata:
+    #         name: efs-sc
+    #       provisioner: efs.csi.aws.com
+    #     mode: "0755"

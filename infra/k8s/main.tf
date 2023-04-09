@@ -1,14 +1,25 @@
 resource "aws_security_group" "cluster_sg" {
   ingress = [{
-    cidr_blocks      = []
+    cidr_blocks      = [ var.vpc.cidr_block ]
     description      = ""
     from_port        = 0
     ipv6_cidr_blocks = []
     prefix_list_ids  = []
     protocol         = "-1"
     security_groups  = []
-    self             = true
+    self             = false
     to_port          = 0
+  },
+  {
+    cidr_blocks      = [ "0.0.0.0/0" ]
+    description      = ""
+    from_port        = 1024
+    ipv6_cidr_blocks = []
+    prefix_list_ids  = []
+    protocol         = "tcp"
+    security_groups  = []
+    self             = false
+    to_port          = 65535
   }]
   egress = [{
     cidr_blocks      = ["0.0.0.0/0"]
@@ -34,12 +45,12 @@ module "master_node" {
   master_node_number    = var.master_node_number
   cluster_sg_id         = aws_security_group.cluster_sg.id
   vpc                   = var.vpc
-  public_subnet_ids     = var.public_subnet_ids
+  private_subnet_ids     = var.private_subnet_ids
   instance_type         = var.instance_type
   ubuntu_ami            = var.ubuntu_ami
   ec2_instance_profile  = var.ec2_instance_profile
   key_name              = var.key_name
-  public_subnet         = data.aws_subnet.public_subnet
+  private_subnet         = data.aws_subnet.private_subnet
 }
 
 module "worker_node" {
