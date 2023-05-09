@@ -5,7 +5,7 @@
 #  * EKS Cluster
 #
 
-resource "aws_iam_role" "demo-cluster" {
+resource "aws_iam_role" "ddps-cluster" {
   name = "jg-eks-test"
 
   assume_role_policy = <<POLICY
@@ -24,20 +24,20 @@ resource "aws_iam_role" "demo-cluster" {
 POLICY
 }
 
-resource "aws_iam_role_policy_attachment" "demo-cluster-AmazonEKSClusterPolicy" {
+resource "aws_iam_role_policy_attachment" "ddps-cluster-AmazonEKSClusterPolicy" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy"
-  role       = aws_iam_role.demo-cluster.name
+  role       = aws_iam_role.ddps-cluster.name
 }
 
-resource "aws_iam_role_policy_attachment" "demo-cluster-AmazonEKSVPCResourceController" {
+resource "aws_iam_role_policy_attachment" "ddps-cluster-AmazonEKSVPCResourceController" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKSVPCResourceController"
-  role       = aws_iam_role.demo-cluster.name
+  role       = aws_iam_role.ddps-cluster.name
 }
 
-resource "aws_security_group" "demo-cluster" {
-  name        = "terraform-eks-demo-cluster"
+resource "aws_security_group" "ddps-cluster" {
+  name        = "terraform-eks-ddps-cluster"
   description = "Cluster communication with worker nodes"
-  vpc_id      = aws_vpc.demo.id
+  vpc_id      = aws_vpc.ddps.id
 
   egress {
     from_port   = 0
@@ -47,31 +47,31 @@ resource "aws_security_group" "demo-cluster" {
   }
 
   tags = {
-    Name = "terraform-eks-demo"
+    Name = "terraform-eks-ddps"
   }
 }
 
-resource "aws_security_group_rule" "demo-cluster-ingress-workstation-https" {
+resource "aws_security_group_rule" "ddps-cluster-ingress-workstation-https" {
   cidr_blocks       = [local.workstation-external-cidr]
   description       = "Allow workstation to communicate with the cluster API Server"
   from_port         = 443
   protocol          = "tcp"
-  security_group_id = aws_security_group.demo-cluster.id
+  security_group_id = aws_security_group.ddps-cluster.id
   to_port           = 443
   type              = "ingress"
 }
 
-resource "aws_eks_cluster" "demo" {
+resource "aws_eks_cluster" "ddps" {
   name     = var.cluster_name
-  role_arn = aws_iam_role.demo-cluster.arn
+  role_arn = aws_iam_role.ddps-cluster.arn
 
   vpc_config {
-    security_group_ids = [aws_security_group.demo-cluster.id]
-    subnet_ids         = aws_subnet.demo[*].id
+    security_group_ids = [aws_security_group.ddps-cluster.id]
+    subnet_ids         = aws_subnet.ddps[*].id
   }
 
   depends_on = [
-    aws_iam_role_policy_attachment.demo-cluster-AmazonEKSClusterPolicy,
-    aws_iam_role_policy_attachment.demo-cluster-AmazonEKSVPCResourceController,
+    aws_iam_role_policy_attachment.ddps-cluster-AmazonEKSClusterPolicy,
+    aws_iam_role_policy_attachment.ddps-cluster-AmazonEKSVPCResourceController,
   ]
 }

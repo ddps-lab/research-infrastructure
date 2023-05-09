@@ -3,6 +3,6 @@ variable "aws_region" {
 }
 
 variable "cluster_name" {
-  default = "terraform-eks-demo"
+  default = "ddps-jg"
   type    = string
 }
