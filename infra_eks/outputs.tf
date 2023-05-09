@@ -26,8 +26,8 @@ CONFIGMAPAWSAUTH
 apiVersion: v1
 clusters:
 - cluster:
-    server: ${aws_eks_cluster.ddps.endpoint}
-    certificate-authority-data: ${aws_eks_cluster.ddps.certificate_authority[0].data}
+    server: ${module.eks.cluster_endpoint}
+    certificate-authority-data: ${module.eks.cluster_certificate_authority_data}
   name: kubernetes
 contexts:
 - context:

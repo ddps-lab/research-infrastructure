@@ -60,18 +60,3 @@ resource "aws_security_group_rule" "ddps-cluster-ingress-workstation-https" {
   to_port           = 443
   type              = "ingress"
 }
-
-resource "aws_eks_cluster" "ddps" {
-  name     = var.cluster_name
-  role_arn = aws_iam_role.ddps-cluster.arn
-
-  vpc_config {
-    security_group_ids = [aws_security_group.ddps-cluster.id]
-    subnet_ids         = aws_subnet.ddps[*].id
-  }
-
-  depends_on = [
-    aws_iam_role_policy_attachment.ddps-cluster-AmazonEKSClusterPolicy,
-    aws_iam_role_policy_attachment.ddps-cluster-AmazonEKSVPCResourceController,
-  ]
-}

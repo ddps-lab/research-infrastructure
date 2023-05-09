@@ -7,4 +7,8 @@ resource "helm_release" "nginx-ingress-controller" {
     name  = "service.type"
     value = "LoadBalancer"
   }
+  provisioner "local-exec" {
+    when    = destroy
+    command = "helm delete nginx-ingress-controller"
+  }
 }

@@ -45,7 +45,7 @@ module "eks" {
   cluster_name    = var.cluster_name
   cluster_version = "1.24"
   vpc_id          = aws_vpc.ddps.id
-  subnet_ids = aws_subnet.ddps[*].id
+  subnet_ids      = aws_subnet.ddps[*].id
 
   cluster_endpoint_public_access = true
 
@@ -59,7 +59,7 @@ module "eks" {
   }
 }
 resource "aws_eks_node_group" "ddps" {
-  cluster_name    = aws_eks_cluster.ddps.name
+  cluster_name    = var.cluster_name
   node_group_name = "ddps"
   node_role_arn   = aws_iam_role.ddps-node.arn
   subnet_ids      = aws_subnet.ddps[*].id
@@ -69,7 +69,7 @@ resource "aws_eks_node_group" "ddps" {
     max_size     = 4
     min_size     = 2
   }
-
+  ami_type       = "AL2_ARM_64"
   instance_types = ["t4g.medium"]
 
   depends_on = [
