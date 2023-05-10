@@ -64,10 +64,10 @@ module "eks" {
   eks_managed_node_groups = {
     initial = {
       instance_types = ["t4g.medium"]
-
-      min_size     = 2
-      max_size     = 5
-      desired_size = 2
+      ami_type       = "AL2_ARM_64"
+      min_size       = 2
+      max_size       = 5
+      desired_size   = 2
     }
   }
 }
