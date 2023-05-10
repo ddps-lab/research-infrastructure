@@ -71,23 +71,3 @@ module "eks" {
     }
   }
 }
-# resource "aws_eks_node_group" "ddps" {
-#   cluster_name    = var.cluster_name
-#   node_group_name = "ddps"
-#   node_role_arn   = aws_iam_role.ddps-node.arn
-#   subnet_ids      = aws_subnet.ddps[*].id
-
-#   scaling_config {
-#     desired_size = 2
-#     max_size     = 4
-#     min_size     = 2
-#   }
-#   ami_type       = "AL2_ARM_64"
-#   instance_types = ["t4g.medium"]
-
-#   depends_on = [
-#     aws_iam_role_policy_attachment.ddps-node-AmazonEKSWorkerNodePolicy,
-#     aws_iam_role_policy_attachment.ddps-node-AmazonEKS_CNI_Policy,
-#     aws_iam_role_policy_attachment.ddps-node-AmazonEC2ContainerRegistryReadOnly,
-#   ]
-# }
