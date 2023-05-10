@@ -57,24 +57,37 @@ module "eks" {
   tags = {
     "karpenter.sh/discovery" = var.cluster_name
   }
-}
-resource "aws_eks_node_group" "ddps" {
-  cluster_name    = var.cluster_name
-  node_group_name = "ddps"
-  node_role_arn   = aws_iam_role.ddps-node.arn
-  subnet_ids      = aws_subnet.ddps[*].id
+  # eks_managed_node_group_defaults = {
+  #   instance_types = ["m6i.large", "m5.large", "m5n.large", "m5zn.large"]
+  # }
 
-  scaling_config {
-    desired_size = 2
-    max_size     = 4
-    min_size     = 2
+  eks_managed_node_groups = {
+    initial = {
+      instance_types = ["t4g.medium"]
+
+      min_size     = 2
+      max_size     = 5
+      desired_size = 2
+    }
   }
-  ami_type       = "AL2_ARM_64"
-  instance_types = ["t4g.medium"]
-
-  depends_on = [
-    aws_iam_role_policy_attachment.ddps-node-AmazonEKSWorkerNodePolicy,
-    aws_iam_role_policy_attachment.ddps-node-AmazonEKS_CNI_Policy,
-    aws_iam_role_policy_attachment.ddps-node-AmazonEC2ContainerRegistryReadOnly,
-  ]
 }
+# resource "aws_eks_node_group" "ddps" {
+#   cluster_name    = var.cluster_name
+#   node_group_name = "ddps"
+#   node_role_arn   = aws_iam_role.ddps-node.arn
+#   subnet_ids      = aws_subnet.ddps[*].id
+
+#   scaling_config {
+#     desired_size = 2
+#     max_size     = 4
+#     min_size     = 2
+#   }
+#   ami_type       = "AL2_ARM_64"
+#   instance_types = ["t4g.medium"]
+
+#   depends_on = [
+#     aws_iam_role_policy_attachment.ddps-node-AmazonEKSWorkerNodePolicy,
+#     aws_iam_role_policy_attachment.ddps-node-AmazonEKS_CNI_Policy,
+#     aws_iam_role_policy_attachment.ddps-node-AmazonEC2ContainerRegistryReadOnly,
+#   ]
+# }
