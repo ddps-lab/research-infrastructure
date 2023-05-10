@@ -7,7 +7,7 @@ module "iam_assumable_role_karpenter" {
   oidc_fully_qualified_subjects = ["system:serviceaccount:karpenter:karpenter"]
 }
 resource "helm_release" "karpenter" {
-  depends_on       = [module.eks.kubeconfig]
+  depends_on       = [module.eks.eks_managed_node_groups]
   namespace        = "karpenter"
   create_namespace = true
   name             = "karpenter"
@@ -30,6 +30,7 @@ resource "helm_release" "karpenter" {
     name  = "aws.defaultInstanceProfile"
     value = aws_iam_role.ddps-node.name
   }
+
   provisioner "local-exec" {
     when    = destroy
     command = "helm delete karpenter"
