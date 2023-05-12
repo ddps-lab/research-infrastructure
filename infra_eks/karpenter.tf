@@ -30,9 +30,4 @@ resource "helm_release" "karpenter" {
     name  = "aws.defaultInstanceProfile"
     value = aws_iam_role.ddps-node.name
   }
-
-  provisioner "local-exec" {
-    when    = destroy
-    command = "helm delete karpenter"
-  }
 }

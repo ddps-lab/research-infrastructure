@@ -10,8 +10,6 @@ spec:
   limits:
     resources:
       cpu: 1000
-  providerRef:
-    name: default
   ttlSecondsAfterEmpty: 30
 ---
 apiVersion: karpenter.k8s.aws/v1alpha1
