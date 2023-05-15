@@ -79,12 +79,26 @@ module "eks" {
   # }
 
   eks_managed_node_groups = {
-    initial = {
+    karpenter = {
       instance_types = ["t4g.medium"]
+      capacity_type  = "ON_DEMAND"
       ami_type       = "AL2_ARM_64"
-      min_size       = 2
-      max_size       = 5
-      desired_size   = 2
+
+      min_size     = 2
+      max_size     = 5
+      desired_size = 2
+
+      labels = {
+        "platform.raf.io/team"    = "sre"
+        "platform.raf.io/part-of" = "core"
+      }
+
+      taints = {
+        dedicated = {
+          key    = "CriticalAddonsOnly"
+          effect = "NO_SCHEDULE"
+        }
+      }
     }
   }
 }

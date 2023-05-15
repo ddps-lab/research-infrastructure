@@ -11,11 +11,10 @@ spec:
       values: ["arm64"]
     - key: "karpenter.sh/capacity-type" # If not included, the webhook for the AWS cloud provider will default to on-demand
       operator: In
-      values: ["spot", "on-demand"]
+      values: ["on-demand"]
   provider:
-    instanceProfile: eks-22c40738-3e4f-a670-408f-7101dd0d467b
     subnetSelector:
-      kubernetes.io/cluster/$CLUSTER_NAME: "ddps-jg"
+      karpenter.sh/discovery: "ddps-jg"
     securityGroupSelector:
-      kubernetes.io/cluster/$CLUSTER_NAME: "ddps-jg"
+      karpenter.sh/discovery: "ddps-jg"
   ttlSecondsAfterEmpty: 30

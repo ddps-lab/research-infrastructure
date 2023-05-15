@@ -59,4 +59,5 @@ resource "aws_security_group_rule" "ddps-cluster-ingress-workstation-https" {
   security_group_id = aws_security_group.ddps-cluster.id
   to_port           = 443
   type              = "ingress"
+  tags              = "karpenter.sh/discovery:${var.cluster_name}"
 }
