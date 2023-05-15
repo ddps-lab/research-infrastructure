@@ -1,3 +1,4 @@
+
 module "iam_assumable_role_karpenter" {
   source                        = "terraform-aws-modules/iam/aws//modules/iam-assumable-role-with-oidc"
   version                       = "4.7.0"
@@ -13,7 +14,7 @@ resource "helm_release" "karpenter" {
   name             = "karpenter"
   repository       = "https://charts.karpenter.sh"
   chart            = "karpenter"
-  version          = "v0.6.0"
+  version          = "v0.9.0"
   set {
     name  = "serviceAccount.annotations.eks\\.amazonaws\\.com/role-arn"
     value = module.iam_assumable_role_karpenter.iam_role_arn

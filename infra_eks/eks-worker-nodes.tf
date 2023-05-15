@@ -37,6 +37,23 @@ resource "aws_iam_role_policy_attachment" "ddps-node-AmazonEC2ContainerRegistryR
   policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
   role       = aws_iam_role.ddps-node.name
 }
+resource "aws_iam_role_policy_attachment" "ddps-node-AmazonEC2FullAccess" {
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEC2FullAccess"
+  role       = aws_iam_role.ddps-node.name
+}
+data "aws_iam_policy" "ssm_managed_instance" {
+  arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
+}
+
+resource "aws_iam_role_policy_attachment" "karpenter_ssm_policy" {
+  role       = aws_iam_role.ddps-node.name
+  policy_arn = data.aws_iam_policy.ssm_managed_instance.arn
+}
+
+resource "aws_iam_instance_profile" "karpenter" {
+  name = "KarpenterNodeInstanceProfile-${var.cluster_name}"
+  role = aws_iam_role.ddps-node.name
+}
 
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
