@@ -1,3 +1,9 @@
+resource "null_resource" "kubectl" {
+  provisioner "local-exec" {
+    command = "aws eks update-kubeconfig --name ${var.cluster_name} --profile default"
+  }
+}
+
 resource "helm_release" "nginx-ingress-controller" {
   name       = "nginx-ingress-controller"
   repository = "https://charts.bitnami.com/bitnami"
@@ -7,8 +13,8 @@ resource "helm_release" "nginx-ingress-controller" {
     name  = "service.type"
     value = "LoadBalancer"
   }
-  provisioner "local-exec" {
-    when    = destroy
-    command = "helm delete nginx-ingress-controller"
-  }
+  # provisioner "local-exec" {
+  #   when    = destroy
+  #   command = "helm delete nginx-ingress-controller"
+  # }
 }
