@@ -1,7 +1,7 @@
 apiVersion: karpenter.sh/v1alpha5
 kind: Provisioner
 metadata:
-  name: default
+  name: discovery
 spec:
   #프로비저닝된 노드의 파라미터를 제한하는 요구 사항
   #연산자 { In, NotIn }은 값을 포함하거나 제외할 수 있도록 하기 위해 지원됨
@@ -16,5 +16,8 @@ spec:
     subnetSelector:
       karpenter.sh/discovery: "eks-jg"
     securityGroupSelector:
+      karpenter.sh/discovery: "eks-jg"
+    tags:
+      Name: karpenter.sh/discovery/karpenter-provisioner
       karpenter.sh/discovery: "eks-jg"
   ttlSecondsAfterEmpty: 30
