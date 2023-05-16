@@ -12,6 +12,7 @@ resource "aws_vpc" "ddps" {
   tags = tomap({
     "Name"                                      = "terraform-eks-ddps-node",
     "kubernetes.io/cluster/${var.cluster_name}" = "shared",
+    "karpenter.sh/discovery"                    = var.cluster_name
   })
 }
 
@@ -22,10 +23,10 @@ resource "aws_subnet" "ddps" {
   cidr_block              = "10.0.${count.index}.0/24"
   map_public_ip_on_launch = true
   vpc_id                  = aws_vpc.ddps.id
-
   tags = tomap({
     "Name"                                      = "terraform-eks-ddps-node",
     "kubernetes.io/cluster/${var.cluster_name}" = "shared",
+    "karpenter.sh/discovery"                    = var.cluster_name
   })
 }
 
@@ -33,7 +34,8 @@ resource "aws_internet_gateway" "ddps" {
   vpc_id = aws_vpc.ddps.id
 
   tags = {
-    Name = "terraform-eks-ddps"
+    Name                     = "terraform-eks-ddps",
+    "karpenter.sh/discovery" = var.cluster_name
   }
 }
 

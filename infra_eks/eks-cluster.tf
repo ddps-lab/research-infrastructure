@@ -6,7 +6,7 @@
 #
 
 resource "aws_iam_role" "ddps-cluster" {
-  name = "jg-eks-test"
+  name = "jg-eks-test-${var.cluster_name}"
 
   assume_role_policy = <<POLICY
 {
@@ -35,7 +35,7 @@ resource "aws_iam_role_policy_attachment" "ddps-cluster-AmazonEKSVPCResourceCont
 }
 
 resource "aws_security_group" "ddps-cluster" {
-  name        = "terraform-eks-ddps-cluster"
+  name        = "terraform-eks-${var.cluster_name}"
   description = "Cluster communication with worker nodes"
   vpc_id      = aws_vpc.ddps.id
 
@@ -47,7 +47,7 @@ resource "aws_security_group" "ddps-cluster" {
   }
 
   tags = {
-    Name = "terraform-eks-ddps"
+    "karpenter.sh/discovery" = var.cluster_name
   }
 }
 
@@ -59,5 +59,4 @@ resource "aws_security_group_rule" "ddps-cluster-ingress-workstation-https" {
   security_group_id = aws_security_group.ddps-cluster.id
   to_port           = 443
   type              = "ingress"
-  tags              = "karpenter.sh/discovery:${var.cluster_name}"
 }

@@ -8,14 +8,13 @@ module "iam_assumable_role_karpenter" {
   oidc_fully_qualified_subjects = ["system:serviceaccount:karpenter:karpenter"]
 }
 resource "helm_release" "karpenter" {
-  depends_on       = [module.eks.eks_managed_node_groups]
+  depends_on       = [null_resource.kubectl]
   namespace        = "karpenter"
   create_namespace = true
   name             = "karpenter"
   repository       = "https://charts.karpenter.sh"
   chart            = "karpenter"
   version          = "v0.6.0"
-  tags             = "karpenter.sh/discovery: ${var.cluster_name}"
 
   set {
     name  = "serviceAccount.annotations.eks\\.amazonaws\\.com/role-arn"

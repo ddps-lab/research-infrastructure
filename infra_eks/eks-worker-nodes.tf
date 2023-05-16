@@ -5,7 +5,7 @@
 #
 
 resource "aws_iam_role" "ddps-node" {
-  name = "jg-eks-node"
+  name = "eks-node-${var.cluster_name}"
 
   assume_role_policy = <<POLICY
 {
@@ -87,18 +87,6 @@ module "eks" {
       min_size     = 2
       max_size     = 5
       desired_size = 2
-
-      labels = {
-        "platform.raf.io/team"    = "sre"
-        "platform.raf.io/part-of" = "core"
-      }
-
-      taints = {
-        dedicated = {
-          key    = "CriticalAddonsOnly"
-          effect = "NO_SCHEDULE"
-        }
-      }
     }
   }
 }

@@ -14,7 +14,7 @@ spec:
       values: ["on-demand"]
   provider:
     subnetSelector:
-      karpenter.sh/discovery: "ddps-jg"
+      karpenter.sh/discovery: "eks-jg"
     securityGroupSelector:
-      karpenter.sh/discovery: "ddps-jg"
+      karpenter.sh/discovery: "eks-jg"
   ttlSecondsAfterEmpty: 30
