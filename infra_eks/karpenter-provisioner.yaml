@@ -1,7 +1,7 @@
 apiVersion: karpenter.sh/v1alpha5
 kind: Provisioner
 metadata:
-  name: discovery
+  name: default
 spec:
   #프로비저닝된 노드의 파라미터를 제한하는 요구 사항
   #연산자 { In, NotIn }은 값을 포함하거나 제외할 수 있도록 하기 위해 지원됨
@@ -14,10 +14,19 @@ spec:
       values: ["on-demand"]
   provider:
     subnetSelector:
-      karpenter.sh/discovery: "eks-jg"
+      karpenter.sh/discovery: "jg"
     securityGroupSelector:
-      karpenter.sh/discovery: "eks-jg"
+      karpenter.sh/discovery: "jg"
     tags:
-      Name: karpenter.sh/discovery/karpenter-provisioner
-      karpenter.sh/discovery: "eks-jg"
+      karpenter.sh/discovery: "jg"
   ttlSecondsAfterEmpty: 30
+# ---
+# apiVersion: karpenter.k8s.aws/v1alpha1
+# kind: AWSNodeTemplate
+# metadata:
+#   name: default
+# spec:
+#   subnetSelector:
+#     aws-ids: "subnet-08b33f66f3340baaf, subnet-0467d7cc73fd7b976"
+#   securityGroupSelector:
+#     aws-ids: "sg-0074e6eb836cfeadd"
