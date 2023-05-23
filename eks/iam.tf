@@ -38,17 +38,33 @@ POLICY
 
 resource "aws_iam_role_policy_attachment" "eksNodeRole-AmazonEKSWorkerNodePolicy" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy"
-  role       = aws_iam_role.eksClusterRole.name
+  role       = aws_iam_role.eksNodeRole.name
 }
 
 resource "aws_iam_role_policy_attachment" "eksNodeRole-AmazonEKS_CNI_Policy" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy"
-  role       = aws_iam_role.eksClusterRole.name
+  role       = aws_iam_role.eksNodeRole.name
 }
 
 resource "aws_iam_role_policy_attachment" "eksNodeRole-AmazonEC2ContainerRegistryReadOnly" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
-  role       = aws_iam_role.eksClusterRole.name
+  role       = aws_iam_role.eksNodeRole.name
+}
+resource "aws_iam_role_policy_attachment" "eksNodeRole-AmazonEC2ContainerRegistryReadOnly" {
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
+  role       = aws_iam_role.eksNodeRole.name
+}
+
+resource "aws_iam_policy" "ALBPolicy" {
+  name        = "KarpenterControllerPolicy-${var.cluster_name}"
+  description = "karpenter policy"
+
+  policy = file("assets/alb_iam_policy.json")
+}
+
+resource "aws_iam_role_policy_attachment" "alb-attach" {
+  role       = aws_iam_role.eksNodeRole.name
+  policy_arn = aws_iam_policy.ALBPolicy.arn
 }
 
 resource "aws_iam_role" "KarpenterInstanceNodeRole" {
