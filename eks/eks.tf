@@ -11,7 +11,7 @@ module "eks" {
   cluster_endpoint_public_access = true
 
   cluster_addons = {
-    coredns = {
+    vpc-cni = {
       most_recent = true
     }
   }
@@ -34,7 +34,6 @@ module "eks" {
 
       create_iam_role = false
       iam_role_arn    = aws_iam_role.eksNodeRole.arn
-      manage_aws_auth = false
     }
   }
 }

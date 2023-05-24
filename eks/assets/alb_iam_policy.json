@@ -3,6 +3,11 @@
     "Statement": [
         {
             "Effect": "Allow",
+            "Action": "sts:AssumeRoleWithWebIdentity",
+            "Resource": "*"
+        },
+        {
+            "Effect": "Allow",
             "Action": [
                 "iam:CreateServiceLinkedRole"
             ],

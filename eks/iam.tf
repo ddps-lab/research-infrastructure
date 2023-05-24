@@ -67,45 +67,6 @@ resource "aws_iam_role_policy_attachment" "alb-attach" {
   policy_arn = aws_iam_policy.ALBPolicy.arn
 }
 
-resource "aws_iam_role" "KarpenterInstanceNodeRole" {
-  name = "KarpenterInstanceNodeRole-${var.cluster_name}"
-
-  assume_role_policy = <<POLICY
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Effect": "Allow",
-      "Principal": {
-        "Service": "ec2.amazonaws.com"
-      },
-      "Action": "sts:AssumeRole"
-    }
-  ]
-}
-POLICY
-}
-resource "aws_iam_role_policy_attachment" "karpenter-AmazonEKSWorkerNodePolicy" {
-  policy_arn = "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy"
-  role       = aws_iam_role.KarpenterInstanceNodeRole.name
-}
-
-resource "aws_iam_role_policy_attachment" "karpenter-AmazonEKS_CNI_Policy" {
-  policy_arn = "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy"
-  role       = aws_iam_role.KarpenterInstanceNodeRole.name
-}
-
-resource "aws_iam_role_policy_attachment" "karpenter-AmazonEC2ContainerRegistryReadOnly" {
-  policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
-  role       = aws_iam_role.KarpenterInstanceNodeRole.name
-}
-
-resource "aws_iam_role_policy_attachment" "karpenter-AmazonSSMManagedInstanceCore" {
-  policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
-  role       = aws_iam_role.KarpenterInstanceNodeRole.name
-}
-
-
 resource "aws_iam_policy" "KarpenterControllerPolicy" {
   name        = "KarpenterControllerPolicy-${var.cluster_name}"
   description = "karpenter policy"
@@ -170,6 +131,7 @@ resource "aws_iam_role" "KarpenterControllerRole" {
 }
 POLICY
 }
+
 resource "aws_iam_role_policy_attachment" "karpenter-attach" {
   role       = aws_iam_role.KarpenterControllerRole.name
   policy_arn = aws_iam_policy.KarpenterControllerPolicy.arn
