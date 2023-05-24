@@ -1,15 +1,17 @@
 resource "null_resource" "iam-oidc-provider" {
+  depends_on = [module.eks.eks_managed_node_groups]
   provisioner "local-exec" {
-    command = "eksctl utils associate-iam-oidc-provider --region ${var.region} --cluster ${var.cluster_name} --approve"
+    command = "eksctl utils associate-iam-oidc-provider --region ${var.aws_region} --cluster ${var.cluster_name} --approve"
   }
 }
 resource "helm_release" "cert_manager" {
+  depends_on = [null_resource.kubectl]
   chart      = "cert-manager"
   repository = "https://charts.jetstack.io"
   name       = "cert-manager"
 
-  create_namespace = "cert_manager"
-  namespace        = "cert_manager"
+  create_namespace = true
+  namespace        = "cert-manager"
 
   set {
     name  = "installCRDs"

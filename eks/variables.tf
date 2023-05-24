@@ -1,14 +1,8 @@
-variable "main_suffix" {
-  type = string
-  default = "ddps"
-}
-
-variable "region" {
-  type = string
+variable "aws_region" {
   default = "us-west-2"
 }
 
-variable "awscli_profile" {
-  type = string
-  default = "default"
+variable "cluster_name" {
+  default = "ddps-jg-test"
+  type    = string
 }
