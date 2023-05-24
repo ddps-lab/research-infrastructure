@@ -31,6 +31,10 @@ module "eks" {
       min_size     = 2
       max_size     = 5
       desired_size = 2
+
+      create_iam_role = false
+      iam_role_arn    = aws_iam_role.eksNodeRole.arn
+      manage_aws_auth = false
     }
   }
 }

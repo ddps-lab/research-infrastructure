@@ -50,6 +50,10 @@ resource "aws_iam_role_policy_attachment" "eksNodeRole-AmazonEC2ContainerRegistr
   policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
   role       = aws_iam_role.eksNodeRole.name
 }
+resource "aws_iam_role_policy_attachment" "eksNodeRole-AmazonSSMManagedInstanceCore" {
+  policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
+  role       = aws_iam_role.eksNodeRole.name
+}
 
 resource "aws_iam_policy" "ALBPolicy" {
   name        = "ALBPolicy-${var.cluster_name}"
