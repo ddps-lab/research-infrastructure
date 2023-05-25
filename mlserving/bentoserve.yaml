@@ -23,17 +23,11 @@ spec:
         app: bentoml-service
     spec:
       containers:
-        - image: kmubigdata/mlserving:latest
-          name: pytorch-resnet50
-          resources:
-            limits:
-              cpu: "1"
-              memory: "5Gi"
-            requests:
-              cpu: "0.5"
-              memory: "3Mi"
-          ports:
-            - containerPort: 3000
+      - image: kmubigdata/mlserving:latest
+        name: pytorch-resnet50
+        resources: {}
+        ports:
+        - containerPort: 3000
 ---
 ### BentoService
 apiVersion: v1
@@ -66,13 +60,13 @@ spec:
     - host: <YOUR URL>
       http:
         paths:
-          - path: /bento
-            pathType: Prefix
-            backend:
-              service:
-                name: bentoml-service
-                port:
-                  number: 3000
+        - path: /bento
+          pathType: Prefix
+          backend:
+            service:
+              name: bentoml-service
+              port:
+                number: 3000
 ---
 ### BentoService ServiceMonitor
 apiVersion: monitoring.coreos.com/v1
@@ -85,4 +79,4 @@ spec:
     matchLabels:
       app: bentoml-service
   endpoints:
-    - port: predict
+  - port: predict
