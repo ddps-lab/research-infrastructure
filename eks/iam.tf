@@ -17,8 +17,18 @@ resource "aws_iam_role" "eksClusterRole" {
 POLICY
 }
 
+resource "aws_iam_role_policy_attachment" "eksClusterRole-AmazonEKSClusterPolicy" {
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy"
+  role       = aws_iam_role.eksClusterRole.name
+}
+
+resource "aws_iam_role_policy_attachment" "eksClusterRole-AmazonEKSServicePolicy" {
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEKSServicePolicy"
+  role       = aws_iam_role.eksClusterRole.name
+}
+
 resource "aws_iam_role" "eksNodeRole" {
-  name = "eksNodeRole-${var.cluster_name}"
+  name = "KarpenterNodeRole-${var.cluster_name}"
 
   assume_role_policy = <<POLICY
 {
@@ -70,7 +80,9 @@ resource "aws_iam_role_policy_attachment" "alb-attach" {
 resource "aws_iam_policy" "KarpenterControllerPolicy" {
   name        = "KarpenterControllerPolicy-${var.cluster_name}"
   description = "karpenter policy"
-
+  tags = {
+    "karpenter.sh/discovery" = var.cluster_name
+  }
   policy = jsonencode({
     "Version" : "2012-10-17",
     "Statement" : [
@@ -108,31 +120,39 @@ resource "aws_iam_policy" "KarpenterControllerPolicy" {
         "Effect" : "Allow",
         "Resource" : "*",
         "Sid" : "ConditionalEC2Termination"
+      },
+      {
+        "Effect" : "Allow",
+        "Action" : "sts:AssumeRoleWithWebIdentity",
+        "Resource" : "*"
       }
     ]
   })
 }
 
-resource "aws_iam_role" "KarpenterControllerRole" {
-  name = "KarpenterControllerRole-${var.cluster_name}"
+module "karpenter_irsa_role" {
+  source = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
 
-  assume_role_policy = <<POLICY
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Effect": "Allow",
-      "Principal": {
-        "Service": "ec2.amazonaws.com"
-      },
-      "Action": "sts:AssumeRole"
+  role_name                          = "KarpenterControllerRole-${var.cluster_name}"
+  attach_karpenter_controller_policy = true
+  role_policy_arns = {
+    policy = aws_iam_policy.KarpenterControllerPolicy.arn
+  }
+  karpenter_controller_cluster_name       = var.cluster_name
+  karpenter_controller_node_iam_role_arns = [module.eks.eks_managed_node_groups["karpenter"].iam_role_arn]
+
+  attach_vpc_cni_policy = true
+  vpc_cni_enable_ipv4   = true
+
+  oidc_providers = {
+    main = {
+      provider_arn               = module.eks.oidc_provider_arn
+      namespace_service_accounts = ["karpenter:karpenter"]
     }
-  ]
-}
-POLICY
+  }
 }
 
-resource "aws_iam_role_policy_attachment" "karpenter-attach" {
-  role       = aws_iam_role.KarpenterControllerRole.name
-  policy_arn = aws_iam_policy.KarpenterControllerPolicy.arn
+resource "aws_iam_instance_profile" "KarpenterNodeInstanceProfile" {
+  name = "KarpenterNodeInstanceProfile-${var.cluster_name}"
+  role = aws_iam_role.eksNodeRole.name
 }

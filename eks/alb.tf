@@ -1,9 +1,3 @@
-resource "null_resource" "iam-oidc-provider" {
-  depends_on = [module.eks.eks_managed_node_groups]
-  provisioner "local-exec" {
-    command = "eksctl utils associate-iam-oidc-provider --region ${var.aws_region} --cluster ${var.cluster_name} --approve"
-  }
-}
 resource "helm_release" "cert_manager" {
   depends_on = [null_resource.kubectl]
   chart      = "cert-manager"
@@ -22,7 +16,7 @@ resource "helm_release" "cert_manager" {
 resource "helm_release" "ingress" {
   depends_on = [
     helm_release.cert_manager,
-    null_resource.iam-oidc-provider
+    module.karpenter_irsa_role
   ]
   name       = "ingress"
   chart      = "aws-load-balancer-controller"

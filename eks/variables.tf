@@ -3,6 +3,6 @@ variable "aws_region" {
 }
 
 variable "cluster_name" {
-  default = "ddps-jg-test"
+  default = "<>"
   type    = string
 }
