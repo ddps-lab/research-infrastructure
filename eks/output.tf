@@ -1,6 +1,6 @@
 output "subnets" {
   value = aws_subnet.ddps.*.id
 }
-output "clsuterName" {
+output "clusterName" {
   value = var.cluster_name
 }

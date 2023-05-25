@@ -9,11 +9,14 @@ spec:
     - key: "karpenter.sh/capacity-type" # If not included, the webhook for the AWS cloud provider will default to on-demand
       operator: In
       values: ["on-demand"]
+    - key: "kubernetes.io/arch"
+      operator: In
+      values: ["amd64"]
   provider:
     subnetSelector:
-      karpenter.sh/discovery: <cluster_name>
+      karpenter.sh/discovery: eks-karpenter
     securityGroupSelector:
-      karpenter.sh/discovery: <cluster_name>
+      karpenter.sh/discovery: eks-karpenter
     tags:
-      karpenter.sh/discovery: <cluster_name>
+      karpenter.sh/discovery: eks-karpenter
   ttlSecondsAfterEmpty: 30
