@@ -14,9 +14,9 @@ spec:
       values: ["amd64"]
   provider:
     subnetSelector:
-      karpenter.sh/discovery: eks-karpenter
+      karpenter.sh/discovery: <cluster_name>
     securityGroupSelector:
-      karpenter.sh/discovery: eks-karpenter
+      karpenter.sh/discovery: <cluster_name>
     tags:
-      karpenter.sh/discovery: eks-karpenter
+      karpenter.sh/discovery: <cluster_name>
   ttlSecondsAfterEmpty: 30
